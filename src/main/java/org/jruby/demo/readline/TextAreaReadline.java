@@ -25,8 +25,9 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-import org.jruby.RubyEncoding;
 import org.jruby.util.Join;
+
+import com.creemama.swingreadline.UTF8Coder;
 
 import jline.console.completer.Completer;
 import jline.console.history.History;
@@ -155,7 +156,7 @@ public class TextAreaReadline implements KeyListener {
 					final ReadRequest request = (ReadRequest) args[0];
 					final String line = (String) args[2];
 					if (line.length() != 0) {
-						byte[] bytes = RubyEncoding.encodeUTF8(line);
+						byte[] bytes = UTF8Coder.encodeUTF8(line);
 						return request.perform(join, new InputBuffer(bytes));
 					} else {
 						return -1;
@@ -594,12 +595,12 @@ public class TextAreaReadline implements KeyListener {
 
 		@Override
 		public void write(byte[] b, int off, int len) {
-			writeLine(RubyEncoding.decodeUTF8(b, off, len));
+			writeLine(UTF8Coder.decodeUTF8(b, off, len));
 		}
 
 		@Override
 		public void write(byte[] b) {
-			writeLine(RubyEncoding.decodeUTF8(b));
+			writeLine(UTF8Coder.decodeUTF8(b));
 		}
 	}
 }
