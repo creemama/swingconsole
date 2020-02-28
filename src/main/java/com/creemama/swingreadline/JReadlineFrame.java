@@ -1,4 +1,4 @@
-package org.jruby.demo.readline;
+package com.creemama.swingreadline;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,11 +16,8 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
-import com.creemama.swingreadline.JReadlineFrameModel;
-import com.creemama.swingreadline.TextAreaReadline;
-
-public class IRBConsole extends JFrame {
-	public IRBConsole(String title) {
+public class JReadlineFrame extends JFrame {
+	public JReadlineFrame(String title) {
 		super(title);
 	}
 

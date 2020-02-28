@@ -24,7 +24,7 @@ import jline.console.completer.Completer;
 import jline.console.history.History;
 
 /**
- * The model for a JRuby {@link org.jruby.demo.readline.IRBConsole}.
+ * The model for a JRuby {@link com.creemama.swingreadline.JReadlineFrame}.
  * <p>
  * The original code for this class comes from JRuby-Readline's <a href=
  * "https://github.com/jruby/jruby-readline/blob/80c8a97cc595837ec8e89154395d3f4a6ed2eee7/src/main/java/org/jruby/demo/readline/TextAreaReadline.java">TextAreaReadline</a>

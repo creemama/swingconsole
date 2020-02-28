@@ -3,7 +3,7 @@ package com.creemama.swingreadline;
 import java.util.List;
 
 /**
- * The model for {@link org.jruby.demo.readline.IRBConsole}.
+ * The model for {@link JReadlineFrame}.
  */
 public interface JReadlineFrameModel {
 	/**
