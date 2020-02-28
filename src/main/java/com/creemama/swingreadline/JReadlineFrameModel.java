@@ -2,8 +2,6 @@ package com.creemama.swingreadline;
 
 import java.util.List;
 
-import org.jruby.demo.readline.TextAreaReadline;
-
 /**
  * The model for {@link org.jruby.demo.readline.IRBConsole}.
  */

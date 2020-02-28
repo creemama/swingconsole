@@ -18,6 +18,7 @@ import org.jruby.runtime.Visibility;
 import org.jruby.runtime.builtin.IRubyObject;
 
 import com.creemama.swingreadline.JReadlineFrameModel;
+import com.creemama.swingreadline.TextAreaReadline;
 
 import jline.console.completer.Completer;
 import jline.console.history.History;

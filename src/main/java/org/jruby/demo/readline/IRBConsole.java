@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 import com.creemama.swingreadline.JReadlineFrameModel;
+import com.creemama.swingreadline.TextAreaReadline;
 
 public class IRBConsole extends JFrame {
 	public IRBConsole(String title) {
