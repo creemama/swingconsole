@@ -25,17 +25,7 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-import org.jruby.Ruby;
 import org.jruby.RubyEncoding;
-import org.jruby.RubyIO;
-import org.jruby.RubyModule;
-import org.jruby.RubyString;
-import org.jruby.ext.readline.Readline;
-import org.jruby.internal.runtime.methods.DynamicMethod;
-import org.jruby.internal.runtime.methods.JavaMethod;
-import org.jruby.runtime.ThreadContext;
-import org.jruby.runtime.Visibility;
-import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.util.Join;
 
 import jline.console.completer.Completer;
@@ -274,72 +264,9 @@ public class TextAreaReadline implements KeyListener {
 
 	private History history;
 
-	private Ruby runtime;
-
-	/**
-	 * Hooks this <code>TextAreaReadline</code> instance into the runtime,
-	 * redefining the <code>Readline</code> module so that it uses this object. This
-	 * method does not redefine the standard input-output streams. If you need that,
-	 * use {@link #hookIntoRuntimeWithStreams(Ruby)}.
-	 *
-	 * @param runtime The runtime.
-	 * @see #hookIntoRuntimeWithStreams(Ruby)
-	 */
-	public void hookIntoRuntime(final Ruby runtime) {
-		this.runtime = runtime;
-
-		/* Hack in to replace usual readline with this */
-		runtime.getLoadService().require("readline");
-		RubyModule readlineM = runtime.getModule("Readline");
-
-		DynamicMethod readlineMethod = new JavaMethod.JavaMethodTwo(readlineM, Visibility.PUBLIC) {
-			@Override
-			public IRubyObject call(ThreadContext context, IRubyObject self, RubyModule clazz, String name,
-					IRubyObject arg0, IRubyObject arg1) {
-				String line = readLine(arg0.toString());
-				if (line != null) {
-					return RubyString.newUnicodeString(runtime, line);
-				} else {
-					return runtime.getNil();
-				}
-			}
-		};
-		readlineM.addMethod("readline", readlineMethod);
-		readlineM.getSingletonClass().addMethod("readline", readlineMethod);
-
-		History history = Readline.getHistory(Readline.getHolder(runtime));
-
-		runtime.evalScriptlet(
-				"ARGV << '--readline' << '--prompt' << 'inf-ruby';" + "require 'irb'; require 'irb/completion';");
-
-		Completer completer = Readline.getCompletor(Readline.getHolder(runtime));
-
-		inject(completer, history);
-	}
-
 	public void inject(Completer newCompleter, History newHistory) {
 		this.completer = newCompleter;
 		this.history = newHistory;
-	}
-
-	/**
-	 * Hooks this <code>TextAreaReadline</code> instance into the runtime,
-	 * redefining the <code>Readline</code> module so that it uses this object. This
-	 * method also redefines the standard input-output streams accordingly.
-	 *
-	 * @param runtime The runtime.
-	 * @see #hookIntoRuntime(Ruby)
-	 */
-	public void hookIntoRuntimeWithStreams(final Ruby runtime) {
-		hookIntoRuntime(runtime);
-
-		RubyIO in = new RubyIO(runtime, getInputStream());
-		runtime.getGlobalVariables().set("$stdin", in);
-
-		RubyIO out = new RubyIO(runtime, getOutputStream());
-		out.sync_set(runtime.getTrue());
-		runtime.getGlobalVariables().set("$stdout", out);
-		runtime.getGlobalVariables().set("$stderr", out);
 	}
 
 	protected void completeAction(KeyEvent event) {
@@ -492,7 +419,7 @@ public class TextAreaReadline implements KeyListener {
 
 	public String readLine(final String prompt) {
 		if (EventQueue.isDispatchThread()) {
-			throw runtime.newThreadError("Cannot call readline from event dispatch thread");
+			throw new IllegalStateException("Cannot call readline from event dispatch thread");
 		}
 
 		EventQueue.invokeLater(new Runnable() {

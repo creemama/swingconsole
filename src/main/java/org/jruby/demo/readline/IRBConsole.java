@@ -7,7 +7,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,10 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
-import org.jruby.Ruby;
-import org.jruby.RubyInstanceConfig;
-import org.jruby.internal.runtime.GlobalVariable;
-import org.jruby.internal.runtime.ValueAccessor;
+import com.creemama.swingreadline.JReadlineFrameModel;
 
 public class IRBConsole extends JFrame {
 	public IRBConsole(String title) {
@@ -57,26 +53,14 @@ public class IRBConsole extends JFrame {
 			}
 		});
 
-		final RubyInstanceConfig config = new RubyInstanceConfig() {
-			{
-				setInput(tar.getInputStream());
-				setOutput(new PrintStream(tar.getOutputStream()));
-				setError(new PrintStream(tar.getOutputStream()));
-				setArgv(list.toArray(new String[0]));
-			}
-		};
-		final Ruby runtime = Ruby.newInstance(config);
-
-		runtime.getGlobalVariables().defineReadonly("$$",
-				new ValueAccessor(runtime.newFixnum(System.identityHashCode(runtime))), GlobalVariable.Scope.GLOBAL);
-
-		tar.hookIntoRuntime(runtime);
+		JReadlineFrameModel model = new JRubyReadlineFrameModel(false);
+		model.setUp(list, tar);
 
 		Thread t2 = new Thread() {
 			@Override
 			public void run() {
 				console.setVisible(true);
-				runtime.evalScriptlet("IRB.start");
+				model.run(tar);
 			}
 		};
 		t2.start();
