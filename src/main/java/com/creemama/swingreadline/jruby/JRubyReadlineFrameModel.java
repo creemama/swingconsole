@@ -1,4 +1,4 @@
-package org.jruby.demo.readline;
+package com.creemama.swingreadline.jruby;
 
 import java.io.PrintStream;
 import java.util.List;
