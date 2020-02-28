@@ -38,6 +38,9 @@ import org.jruby.runtime.Visibility;
 import org.jruby.runtime.builtin.IRubyObject;
 import org.jruby.util.Join;
 
+import jline.console.completer.Completer;
+import jline.console.history.History;
+
 public class TextAreaReadline implements KeyListener {
 	private static final String EMPTY_LINE = "";
 
@@ -267,6 +270,10 @@ public class TextAreaReadline implements KeyListener {
 		return outputStream;
 	}
 
+	private Completer completer;
+
+	private History history;
+
 	private Ruby runtime;
 
 	/**
@@ -280,6 +287,7 @@ public class TextAreaReadline implements KeyListener {
 	 */
 	public void hookIntoRuntime(final Ruby runtime) {
 		this.runtime = runtime;
+
 		/* Hack in to replace usual readline with this */
 		runtime.getLoadService().require("readline");
 		RubyModule readlineM = runtime.getModule("Readline");
@@ -298,6 +306,20 @@ public class TextAreaReadline implements KeyListener {
 		};
 		readlineM.addMethod("readline", readlineMethod);
 		readlineM.getSingletonClass().addMethod("readline", readlineMethod);
+
+		History history = Readline.getHistory(Readline.getHolder(runtime));
+
+		runtime.evalScriptlet(
+				"ARGV << '--readline' << '--prompt' << 'inf-ruby';" + "require 'irb'; require 'irb/completion';");
+
+		Completer completer = Readline.getCompletor(Readline.getHolder(runtime));
+
+		inject(completer, history);
+	}
+
+	public void inject(Completer newCompleter, History newHistory) {
+		this.completer = newCompleter;
+		this.history = newHistory;
 	}
 
 	/**
@@ -321,7 +343,7 @@ public class TextAreaReadline implements KeyListener {
 	}
 
 	protected void completeAction(KeyEvent event) {
-		if (Readline.getCompletor(Readline.getHolder(runtime)) == null)
+		if (completer == null)
 			return;
 
 		event.consume();
@@ -339,7 +361,7 @@ public class TextAreaReadline implements KeyListener {
 
 		int cursor = area.getCaretPosition() - startPos;
 
-		int position = Readline.getCompletor(Readline.getHolder(runtime)).complete(bufstr, cursor, candidates);
+		int position = completer.complete(bufstr, cursor, candidates);
 
 		// no candidates? Fail.
 		if (candidates.isEmpty()) {
@@ -394,16 +416,16 @@ public class TextAreaReadline implements KeyListener {
 			return;
 		}
 
-		if (!Readline.getHistory(Readline.getHolder(runtime)).next()) {
+		if (!history.next()) {
 			currentLine = getLine(); // at end
 		} else {
-			Readline.getHistory(Readline.getHolder(runtime)).previous(); // undo check
+			history.previous(); // undo check
 		}
 
-		if (!Readline.getHistory(Readline.getHolder(runtime)).previous())
+		if (!history.previous())
 			return;
 
-		String oldLine = Readline.getHistory(Readline.getHolder(runtime)).current().toString().trim();
+		String oldLine = history.current().toString().trim();
 		replaceText(startPos, area.getDocument().getLength(), oldLine);
 	}
 
@@ -418,15 +440,15 @@ public class TextAreaReadline implements KeyListener {
 			return;
 		}
 
-		if (!Readline.getHistory(Readline.getHolder(runtime)).next())
+		if (!history.next())
 			return;
 
 		String oldLine;
-		if (!Readline.getHistory(Readline.getHolder(runtime)).next()) {
+		if (!history.next()) {
 			oldLine = currentLine; // at end
 		} else {
-			Readline.getHistory(Readline.getHolder(runtime)).previous(); // undo check
-			oldLine = Readline.getHistory(Readline.getHolder(runtime)).current().toString().trim();
+			history.previous(); // undo check
+			oldLine = history.current().toString().trim();
 		}
 
 		replaceText(startPos, area.getDocument().getLength(), oldLine);
@@ -480,7 +502,7 @@ public class TextAreaReadline implements KeyListener {
 				append(" ", inputStyle); // hack to get right style for input
 				area.setCaretPosition(area.getDocument().getLength());
 				startPos = area.getDocument().getLength();
-				Readline.getHistory(Readline.getHolder(runtime)).moveToEnd();
+				history.moveToEnd();
 			}
 		});
 

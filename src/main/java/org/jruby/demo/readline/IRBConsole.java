@@ -76,8 +76,7 @@ public class IRBConsole extends JFrame {
 			@Override
 			public void run() {
 				console.setVisible(true);
-				runtime.evalScriptlet("ARGV << '--readline' << '--prompt' << 'inf-ruby';"
-						+ "require 'irb'; require 'irb/completion';" + "IRB.start");
+				runtime.evalScriptlet("IRB.start");
 			}
 		};
 		t2.start();
