@@ -26,10 +26,14 @@ public class IRBConsole extends JFrame {
 
 	public static void main(final String[] args) {
 		final IRBConsole console = new IRBConsole("JRuby IRB Console");
+		console.run(args, new JRubyReadlineFrameModel(false));
+	}
+
+	public void run(String[] args, JReadlineFrameModel model) {
 		final ArrayList<String> list = new ArrayList(Arrays.asList(args));
 
-		console.getContentPane().setLayout(new BorderLayout());
-		console.setSize(700, 600);
+		getContentPane().setLayout(new BorderLayout());
+		setSize(700, 600);
 
 		JEditorPane text = new JTextPane();
 
@@ -37,30 +41,29 @@ public class IRBConsole extends JFrame {
 		text.setCaretColor(new Color(0xa4, 0x00, 0x00));
 		text.setBackground(new Color(0xf2, 0xf2, 0xf2));
 		text.setForeground(new Color(0xa4, 0x00, 0x00));
-		Font font = console.findFont("Monospaced", Font.PLAIN, 14, new String[] { "Monaco", "Andale Mono" });
+		Font font = findFont("Monospaced", Font.PLAIN, 14, new String[] { "Monaco", "Andale Mono" });
 
 		text.setFont(font);
 		JScrollPane pane = new JScrollPane();
 		pane.setViewportView(text);
 		pane.setBorder(BorderFactory.createLineBorder(Color.darkGray));
-		console.getContentPane().add(pane);
-		console.validate();
+		getContentPane().add(pane);
+		validate();
 
 		final TextAreaReadline tar = new TextAreaReadline(text, " Welcome to the JRuby IRB Console \n\n");
-		console.addWindowListener(new WindowAdapter() {
+		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				tar.shutdown();
 			}
 		});
 
-		JReadlineFrameModel model = new JRubyReadlineFrameModel(false);
 		model.setUp(list, tar);
 
 		Thread t2 = new Thread() {
 			@Override
 			public void run() {
-				console.setVisible(true);
+				setVisible(true);
 				model.run(tar);
 			}
 		};
