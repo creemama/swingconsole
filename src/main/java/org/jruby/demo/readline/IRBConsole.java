@@ -24,11 +24,6 @@ public class IRBConsole extends JFrame {
 		super(title);
 	}
 
-	public static void main(final String[] args) {
-		final IRBConsole console = new IRBConsole("JRuby IRB Console");
-		console.run(args, new JRubyReadlineFrameModel(false));
-	}
-
 	public void run(String[] args, JReadlineFrameModel model) {
 		final ArrayList<String> list = new ArrayList(Arrays.asList(args));
 
@@ -50,7 +45,7 @@ public class IRBConsole extends JFrame {
 		getContentPane().add(pane);
 		validate();
 
-		final TextAreaReadline tar = new TextAreaReadline(text, " Welcome to the JRuby IRB Console \n\n");
+		final TextAreaReadline tar = new TextAreaReadline(text, " Welcome to the " + getTitle() + " \n\n");
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
