@@ -25,8 +25,7 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-import org.jruby.util.Join;
-
+import com.creemama.swingreadline.Join;
 import com.creemama.swingreadline.UTF8Coder;
 
 import jline.console.completer.Completer;
