@@ -28,6 +28,15 @@ import javax.swing.text.StyleConstants;
 import jline.console.completer.Completer;
 import jline.console.history.History;
 
+/**
+ * A controller of a text area, a {@link javax.swing.JTextComponent}, displaying
+ * an interactive console with possible readline support like tab completion and
+ * command history.
+ * <p>
+ * The original code for this class comes from <a href=
+ * "https://github.com/jruby/jruby-readline/blob/80c8a97cc595837ec8e89154395d3f4a6ed2eee7/src/main/java/org/jruby/demo/readline/TextAreaReadline.java">JRuby-Readline</a>.
+ * </p>
+ */
 public class TextAreaReadline implements KeyListener {
 	private static final String EMPTY_LINE = "";
 

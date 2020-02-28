@@ -16,6 +16,10 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
+/**
+ * A {@code JFrame} that displays an interactive console with possible readline
+ * functionality like tab completion and command history.
+ */
 public class JReadlineFrame extends JFrame {
 	public JReadlineFrame(String title) {
 		super(title);

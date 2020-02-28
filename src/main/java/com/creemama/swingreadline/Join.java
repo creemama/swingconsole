@@ -32,6 +32,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.Executor;
 
+/**
+ * <p>
+ * The original code for this class comes from <a href=
+ * "https://github.com/jruby/jruby/blob/9.2.10.0/core/src/main/java/org/jruby/util/Join.java">JRuby</a>.
+ * </p>
+ */
 public final class Join {
     public static final Executor TRIVIAL_EXECUTOR = new Executor() {
         public void execute(Runnable command) {
