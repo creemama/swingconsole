@@ -20,5 +20,6 @@
 	<modules>
 		<module>swingconsole</module>
 		<module>swingconsole-jruby</module>
+		<module>swingconsole-jython</module>
 	</modules>
 </project>
