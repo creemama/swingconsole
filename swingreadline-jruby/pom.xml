@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.creemama.swingreadline</groupId>
+		<artifactId>swingreadline-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>swingreadline-jruby</artifactId>
+	<!-- The first part of the version number matches the version number of 
+		org.jruby.jruby-complete. The second part of the version number matches the 
+		semantic versioning (https://semver.org/) of this project. -->
+	<version>9.2.10.0.0.0.1-SNAPSHOT</version>
+
+	<name>JRuby SwingReadline</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.creemama.swingreadline</groupId>
+			<artifactId>swingreadline</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.jruby/jruby-complete -->
+		<dependency>
+			<groupId>org.jruby</groupId>
+			<artifactId>jruby-complete</artifactId>
+			<version>9.2.10.0</version>
+		</dependency>
+	</dependencies>
+</project>
