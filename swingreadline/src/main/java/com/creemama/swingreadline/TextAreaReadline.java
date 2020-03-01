@@ -3,17 +3,22 @@ package com.creemama.swingreadline;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicComboPopup;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
@@ -246,7 +251,8 @@ public class TextAreaReadline implements KeyListener {
 
 		completeCombo = new JComboBox();
 		completeCombo.setRenderer(new DefaultListCellRenderer()); // no silly ticks!
-		completePopup = new BasicComboPopup(completeCombo);
+		completeCombo.addActionListener(this::handleComboBoxActionEvent);
+		completePopup = createCompletePopup();
 
 		if (message != null) {
 			final MutableAttributeSet messageStyle = new SimpleAttributeSet();
@@ -256,6 +262,35 @@ public class TextAreaReadline implements KeyListener {
 		}
 
 		startPos = area.getDocument().getLength();
+	}
+
+	@SuppressWarnings("deprecation")
+	private void handleComboBoxActionEvent(ActionEvent e) {
+		// When the tab-completion popup is visible, let users left-click items
+		// (BUTTON1) to select an item.
+
+		// BUTTON1_MASK is deprecated. Its recommended replacement is the following,
+		// which does not work since ActionEvent does not have a getModifiersEx method:
+		// e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK
+
+		if ((e.getModifiers() & InputEvent.BUTTON1_MASK) != 0 && completePopup.isVisible()) {
+			if (completeCombo.getSelectedItem() != null) {
+				replaceText(start, end, (String) completeCombo.getSelectedItem());
+			}
+			completePopup.setVisible(false);
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private BasicComboPopup createCompletePopup() {
+		try {
+			// Attempt to create a popup using the current look and feel.
+			Method method = BasicComboBoxUI.class.getDeclaredMethod("createPopup");
+			method.setAccessible(true);
+			return (BasicComboPopup) method.invoke(completeCombo.getUI());
+		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | RuntimeException e) {
+			return new BasicComboPopup(completeCombo);
+		}
 	}
 
 	public InputStream getInputStream() {
