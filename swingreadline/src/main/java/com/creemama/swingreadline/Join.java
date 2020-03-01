@@ -46,7 +46,7 @@ public final class Join {
     };
 
     private final Executor executor;
-    private final LinkedList[] writes;
+    private final LinkedList<Object>[] writes;
     private final long asyncMask;
     private long mask = 0;
     private final Reaction[][] reactionsPerChannel;
@@ -212,10 +212,11 @@ public final class Join {
     }
 
     private Join(final long asyncMask, final Reaction[][] reactionsPerChannel, Executor executor) {
-        final LinkedList[] writes = new LinkedList[reactionsPerChannel.length];
+        @SuppressWarnings("unchecked")
+        final LinkedList<Object>[] writes = new LinkedList[reactionsPerChannel.length];
         for ( int i = 0 ; i < writes.length ; ++i ) {
             if ( reactionsPerChannel[i] != null ) {
-                writes[i] = new LinkedList();
+                writes[i] = new LinkedList<>();
             }
         }
         this.asyncMask = asyncMask;
@@ -228,7 +229,7 @@ public final class Join {
         Reaction selectedReaction = null;
         Object[] args = null;
         synchronized (this) {
-            final LinkedList writing = writes[index];
+            final LinkedList<Object> writing = writes[index];
             if ( writing == null ) {
                 throw new IndexOutOfBoundsException();
             }
@@ -241,7 +242,7 @@ public final class Join {
                     args = new Object[indices.length];
                     for ( int i = 0 ; i < indices.length ; ++i ) {
                         final int readIndex = indices[i];
-                        final LinkedList reading = writes[readIndex];
+                        final LinkedList<Object> reading = writes[readIndex];
                         args[i] = reading.removeFirst();
                         if (reading.isEmpty()) {
                             mask &= ~(1L << readIndex);

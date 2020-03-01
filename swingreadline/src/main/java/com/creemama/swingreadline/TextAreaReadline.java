@@ -54,7 +54,7 @@ public class TextAreaReadline implements KeyListener {
 	public volatile MutableAttributeSet outputStyle;
 	public volatile MutableAttributeSet resultStyle;
 
-	private JComboBox completeCombo;
+	private JComboBox<String> completeCombo;
 	private BasicComboPopup completePopup;
 	private int start;
 	private int end;
@@ -249,7 +249,7 @@ public class TextAreaReadline implements KeyListener {
 		StyleConstants.setItalic(resultStyle, true);
 		StyleConstants.setForeground(resultStyle, new Color(0x20, 0x4a, 0x87));
 
-		completeCombo = new JComboBox();
+		completeCombo = new JComboBox<>();
 		completeCombo.setRenderer(new DefaultListCellRenderer()); // no silly ticks!
 		completeCombo.addActionListener(this::handleComboBoxActionEvent);
 		completePopup = createCompletePopup();
@@ -289,7 +289,7 @@ public class TextAreaReadline implements KeyListener {
 			method.setAccessible(true);
 			return (BasicComboPopup) method.invoke(completeCombo.getUI());
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | RuntimeException e) {
-			return new BasicComboPopup(completeCombo);
+			return new BasicComboPopup((JComboBox) completeCombo);
 		}
 	}
 
@@ -319,7 +319,7 @@ public class TextAreaReadline implements KeyListener {
 		if (completePopup.isVisible())
 			return;
 
-		List candidates = new LinkedList();
+		List<CharSequence> candidates = new LinkedList<>();
 		String bufstr = null;
 		try {
 			bufstr = area.getText(startPos, area.getCaretPosition() - startPos);
@@ -357,7 +357,7 @@ public class TextAreaReadline implements KeyListener {
 		}
 
 		completeCombo.removeAllItems();
-		for (Iterator i = candidates.iterator(); i.hasNext();) {
+		for (Iterator<CharSequence> i = candidates.iterator(); i.hasNext();) {
 			String item = (String) i.next();
 			if (cutoff != 0)
 				item = item.substring(cutoff);

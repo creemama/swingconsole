@@ -304,9 +304,9 @@ public class Readline {
 
     @JRubyMethod(name = "set_screen_size", module = true, visibility = PRIVATE)
     public static IRubyObject s_set_screen_size(ThreadContext context, IRubyObject recv, IRubyObject height, IRubyObject width) {
-        final int h = height.convertToInteger().getIntValue();
-        final int w = width.convertToInteger().getIntValue();
-        ConsoleHolder holder = getHolderWithReadline(context.runtime);
+        // final int h = height.convertToInteger().getIntValue();
+        // final int w = width.convertToInteger().getIntValue();
+        // ConsoleHolder holder = getHolderWithReadline(context.runtime);
         // NOTE: we could do a :
         // ((UnixTerminal) holder.readline.getTerminal()).getSettings().set(...);
         // ... (on *nix) - MRI seems to be silent on set_screen_size (on Linux)
@@ -473,7 +473,7 @@ public class Readline {
         public static IRubyObject s_hist_to_a(IRubyObject recv) {
             Ruby runtime = recv.getRuntime();
             ConsoleHolder holder = getHolder(runtime);
-            RubyArray histList = runtime.newArray(holder.history.size());
+            RubyArray<?> histList = runtime.newArray(holder.history.size());
 
             ListIterator<History.Entry> historyIterator = holder.history.entries();
             while (historyIterator.hasNext()) {
@@ -640,6 +640,7 @@ public class Readline {
             return index;
         }
 
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         public int complete(String buffer, int cursor, List<CharSequence> candidates) {
             buffer = buffer.substring(0, cursor);
             int index = wordIndexOf(buffer);

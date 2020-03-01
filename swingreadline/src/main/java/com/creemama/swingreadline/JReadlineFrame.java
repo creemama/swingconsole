@@ -7,8 +7,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
@@ -26,7 +26,7 @@ public class JReadlineFrame extends JFrame {
 	}
 
 	public void run(String[] args, JReadlineFrameModel model) {
-		final ArrayList<String> list = new ArrayList(Arrays.asList(args));
+		List<String> list = Arrays.asList(args);
 
 		getContentPane().setLayout(new BorderLayout());
 		setSize(700, 600);
@@ -90,9 +90,5 @@ public class JReadlineFrame extends JFrame {
 		return font;
 	}
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 3746242973444417387L;
-
 }

@@ -88,7 +88,7 @@ public class JRubyReadlineFrameModel implements JReadlineFrameModel {
 		runtime.getLoadService().require("readline");
 		RubyModule readlineM = runtime.getModule("Readline");
 
-		DynamicMethod readlineMethod = new JavaMethod.JavaMethodTwo(readlineM, Visibility.PUBLIC) {
+		DynamicMethod readlineMethod = new JavaMethod.JavaMethodTwo(readlineM, Visibility.PUBLIC, "readline") {
 			@Override
 			public IRubyObject call(ThreadContext context, IRubyObject self, RubyModule clazz, String name,
 					IRubyObject arg0, IRubyObject arg1) {
