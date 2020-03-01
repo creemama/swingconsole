@@ -1,6 +1,11 @@
 package com.creemama.swingreadline.jruby;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import org.jruby.Ruby;
@@ -8,6 +13,8 @@ import org.jruby.RubyIO;
 import org.jruby.RubyInstanceConfig;
 import org.jruby.RubyModule;
 import org.jruby.RubyString;
+import org.jruby.embed.LocalContextScope;
+import org.jruby.embed.ScriptingContainer;
 import org.jruby.ext.readline.Readline;
 import org.jruby.internal.runtime.GlobalVariable;
 import org.jruby.internal.runtime.ValueAccessor;
@@ -41,6 +48,12 @@ public class JRubyReadlineFrameModel implements JReadlineFrameModel {
 	private Ruby runtime;
 
 	/**
+	 * See https://github.com/jruby/jruby/wiki/RedBridge and the Javadoc for
+	 * {@link ScriptingContainer}.
+	 */
+	private ScriptingContainer container;
+
+	/**
 	 * Constructs a new {@link JRubyReadlineFrameModel} instance.
 	 * 
 	 * @param redefineStandardIOStreams whether to redefine JRuby's {@code $stdin},
@@ -61,6 +74,9 @@ public class JRubyReadlineFrameModel implements JReadlineFrameModel {
 			}
 		};
 		final Ruby runtime = Ruby.newInstance(config);
+
+		// Create a scripting container attached to runtime.
+		container = new ScriptingContainer(LocalContextScope.SINGLETHREAD);
 
 		runtime.getGlobalVariables().defineReadonly("$$",
 				new ValueAccessor(runtime.newFixnum(System.identityHashCode(runtime))), GlobalVariable.Scope.GLOBAL);
@@ -131,6 +147,18 @@ public class JRubyReadlineFrameModel implements JReadlineFrameModel {
 		out.sync_set(runtime.getTrue());
 		runtime.getGlobalVariables().set("$stdout", out);
 		runtime.getGlobalVariables().set("$stderr", out);
+	}
+
+	@Override
+	public void runScript(File script) throws IOException {
+		try (Reader reader = new FileReader(script, Charset.forName("UTF-8"))) {
+			container.runScriptlet(reader, script.getPath());
+		}
+	}
+
+	@Override
+	public void putVariable(String variableName, Object value) {
+		container.put(variableName, value);
 	}
 
 	@Override
