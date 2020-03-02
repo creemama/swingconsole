@@ -19,6 +19,7 @@
 
 	<modules>
 		<module>swingconsole</module>
+		<module>swingconsole-jep</module>
 		<module>swingconsole-jruby</module>
 		<module>swingconsole-jython</module>
 	</modules>
