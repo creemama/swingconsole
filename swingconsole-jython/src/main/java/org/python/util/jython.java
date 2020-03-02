@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -103,9 +104,7 @@ public class jython {
         // argument.
         //
         // Probably have to keep this code around for backwards compatibility (?)
-        try {
-            ZipFile zip = new ZipFile(filename);
-
+        try (ZipFile zip = new ZipFile(filename)) {
             ZipEntry runit = zip.getEntry("__run__.py");
             if (runit == null) {
                 throw Py.ValueError("jar file missing '__run__.py'");
@@ -139,7 +138,7 @@ public class jython {
     public static void main(String[] args) {
         do {
             shouldRestart = false;
-            run(args);
+            run(args, null);
         } while (shouldRestart);
     }
 
@@ -218,7 +217,7 @@ public class jython {
         return false;
     }
 
-    public static void run(String[] args) {
+    public static void run(String[] args, Consumer<InteractiveConsole> interpreterConsumer) {
         // Parse the command line options
         CommandLineOptions opts = new CommandLineOptions();
         if (!opts.parse(args)) {
@@ -242,6 +241,9 @@ public class jython {
 
         // Read environment variable PYTHONIOENCODING into properties (registry)
         String pythonIoEncoding = getenv("PYTHONIOENCODING");
+        if (pythonIoEncoding == null) {
+            pythonIoEncoding = "UTF-8";
+        }
         if (pythonIoEncoding != null) {
             String[] spec = splitString(pythonIoEncoding, ':', 2);
             // Note that if encoding or errors is blank (=null), the registry value wins.
@@ -282,15 +284,16 @@ public class jython {
             systemState.ps1 = systemState.ps2 = Py.EmptyString;
         }
         InteractiveConsole interp = new InteractiveConsole();
+        if (interpreterConsumer != null) interpreterConsumer.accept(interp);
 
         // Print banner and copyright information (or not)
         if (opts.interactive && opts.notice && !opts.runModule) {
-            System.err.println(InteractiveConsole.getDefaultBanner());
+            Py.println(new PyString(InteractiveConsole.getDefaultBanner()));
         }
 
         if (Py.importSiteIfSelected()) {
             if (opts.interactive && opts.notice && !opts.runModule) {
-                System.err.println(COPYRIGHT);
+            	Py.println(new PyString(COPYRIGHT));
             }
         }
 
