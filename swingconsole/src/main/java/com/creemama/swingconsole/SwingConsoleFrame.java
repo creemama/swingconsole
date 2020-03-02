@@ -15,7 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 /**
- * A {@code JFrame} that displays an interactive console with possible readline
+ * A {@link JFrame} that displays an interactive console with possible readline
  * functionality like tab completion and command history.
  */
 public class SwingConsoleFrame extends JFrame {
@@ -29,23 +29,21 @@ public class SwingConsoleFrame extends JFrame {
 	public void run(String[] args, SwingConsoleModel model) {
 		List<String> list = Arrays.asList(args);
 
-		getContentPane().setLayout(new BorderLayout());
-		setSize(700, 600);
-
 		JEditorPane text = new JTextPane();
-
-		text.setMargin(new Insets(8, 8, 8, 8));
-		text.setCaretColor(new Color(0xa4, 0x00, 0x00));
 		text.setBackground(new Color(0xf2, 0xf2, 0xf2));
-		text.setForeground(new Color(0xa4, 0x00, 0x00));
+		text.setCaretColor(new Color(0xa4, 0x00, 0x00));
 		Font font = findFont("Monospaced", Font.PLAIN, 14, new String[] { "Monaco", "Andale Mono" });
-
 		text.setFont(font);
+		text.setForeground(new Color(0xa4, 0x00, 0x00));
+		text.setMargin(new Insets(8, 8, 8, 8));
+
 		JScrollPane pane = new JScrollPane();
-		pane.setViewportView(text);
 		pane.setBorder(BorderFactory.createLineBorder(Color.darkGray));
-		getContentPane().add(pane);
-		validate();
+		pane.setViewportView(text);
+
+		setSize(700, 600);
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().add(pane, BorderLayout.CENTER);
 
 		tar = new TextAreaReadline(text, " Welcome to the " + getTitle() + " \n\n");
 
