@@ -1,4 +1,4 @@
-package com.creemama.swingreadline.jruby;
+package com.creemama.swingconsole.jruby;
 
 import java.io.File;
 import java.io.FileReader;
@@ -24,14 +24,14 @@ import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.Visibility;
 import org.jruby.runtime.builtin.IRubyObject;
 
-import com.creemama.swingreadline.JReadlineFrameModel;
-import com.creemama.swingreadline.TextAreaReadline;
+import com.creemama.swingconsole.SwingConsoleModel;
+import com.creemama.swingconsole.TextAreaReadline;
 
 import jline.console.completer.Completer;
 import jline.console.history.History;
 
 /**
- * The model for a JRuby {@link com.creemama.swingreadline.JReadlineFrame}.
+ * The model for a JRuby {@link com.creemama.swingconsole.SwingConsoleFrame}.
  * <p>
  * The original code for this class comes from JRuby-Readline's <a href=
  * "https://github.com/jruby/jruby-readline/blob/80c8a97cc595837ec8e89154395d3f4a6ed2eee7/src/main/java/org/jruby/demo/readline/TextAreaReadline.java">TextAreaReadline</a>
@@ -39,9 +39,9 @@ import jline.console.history.History;
  * "https://github.com/jruby/jruby-readline/blob/80c8a97cc595837ec8e89154395d3f4a6ed2eee7/src/main/java/org/jruby/demo/readline/IRBConsole.java">IRBConsole</a>.
  * </p>
  * 
- * @see JReadlineFrameModel
+ * @see SwingConsoleModel
  */
-public class JRubyReadlineFrameModel implements JReadlineFrameModel {
+public class JRubyConsoleModel implements SwingConsoleModel {
 
 	private final boolean redefineStandardIOStreams;
 
@@ -54,12 +54,12 @@ public class JRubyReadlineFrameModel implements JReadlineFrameModel {
 	private ScriptingContainer container;
 
 	/**
-	 * Constructs a new {@link JRubyReadlineFrameModel} instance.
+	 * Constructs a new {@link JRubyConsoleModel} instance.
 	 * 
 	 * @param redefineStandardIOStreams whether to redefine JRuby's {@code $stdin},
 	 *                                  {@code $stdout}, and {@code $stderr} streams
 	 */
-	public JRubyReadlineFrameModel(boolean redefineStandardIOStreams) {
+	public JRubyConsoleModel(boolean redefineStandardIOStreams) {
 		this.redefineStandardIOStreams = redefineStandardIOStreams;
 	}
 

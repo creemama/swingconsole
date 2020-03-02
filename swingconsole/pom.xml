@@ -5,14 +5,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.creemama.swingreadline</groupId>
-		<artifactId>swingreadline-parent</artifactId>
+		<groupId>com.creemama.swingconsole</groupId>
+		<artifactId>swingconsole-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>swingreadline</artifactId>
+	<artifactId>swingconsole</artifactId>
 
-	<name>SwingReadline</name>
+	<name>SwingConsole</name>
 
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/com.headius/backport9 -->

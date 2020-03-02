@@ -1,4 +1,4 @@
-package com.creemama.swingreadline;
+package com.creemama.swingconsole;
 
 import java.awt.Color;
 import java.awt.EventQueue;

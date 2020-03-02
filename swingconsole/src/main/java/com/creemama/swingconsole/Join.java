@@ -26,7 +26,7 @@
  * the terms of any one of the EPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
 
-package com.creemama.swingreadline;
+package com.creemama.swingconsole;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

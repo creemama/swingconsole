@@ -5,23 +5,23 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.creemama.swingreadline</groupId>
-		<artifactId>swingreadline-parent</artifactId>
+		<groupId>com.creemama.swingconsole</groupId>
+		<artifactId>swingconsole-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>swingreadline-jruby</artifactId>
+	<artifactId>swingconsole-jruby</artifactId>
 	<!-- The first part of the version number matches the version number of 
 		org.jruby.jruby-complete. The second part of the version number matches the 
 		semantic versioning (https://semver.org/) of this project. -->
 	<version>9.2.10.0.0.0.1-SNAPSHOT</version>
 
-	<name>JRuby SwingReadline</name>
+	<name>JRuby SwingConsole</name>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.creemama.swingreadline</groupId>
-			<artifactId>swingreadline</artifactId>
+			<groupId>com.creemama.swingconsole</groupId>
+			<artifactId>swingconsole</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jruby/jruby-complete -->

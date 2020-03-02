@@ -1,4 +1,4 @@
-package com.creemama.swingreadline;
+package com.creemama.swingconsole;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,15 +18,15 @@ import javax.swing.JTextPane;
  * A {@code JFrame} that displays an interactive console with possible readline
  * functionality like tab completion and command history.
  */
-public class JReadlineFrame extends JFrame {
+public class SwingConsoleFrame extends JFrame {
 	private TextAreaReadline tar;
 
-	public JReadlineFrame(String title) {
+	public SwingConsoleFrame(String title) {
 		super(title);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
-	public void run(String[] args, JReadlineFrameModel model) {
+	public void run(String[] args, SwingConsoleModel model) {
 		List<String> list = Arrays.asList(args);
 
 		getContentPane().setLayout(new BorderLayout());

@@ -1,13 +1,13 @@
-package com.creemama.swingreadline;
+package com.creemama.swingconsole;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 /**
- * The model for {@link JReadlineFrame}.
+ * The model for {@link SwingConsoleFrame}.
  */
-public interface JReadlineFrameModel {
+public interface SwingConsoleModel {
 	/**
 	 * Hooks up the specified {@code tar}.
 	 * <p>
