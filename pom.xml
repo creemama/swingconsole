@@ -53,6 +53,7 @@
 
 	<modules>
 		<module>swingconsole</module>
+		<module>swingconsole-jep</module>
 		<module>swingconsole-jruby</module>
 	</modules>
 
