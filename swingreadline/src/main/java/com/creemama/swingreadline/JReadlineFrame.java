@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,8 +19,11 @@ import javax.swing.JTextPane;
  * functionality like tab completion and command history.
  */
 public class JReadlineFrame extends JFrame {
+	private TextAreaReadline tar;
+
 	public JReadlineFrame(String title) {
 		super(title);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
 	public void run(String[] args, JReadlineFrameModel model) {
@@ -46,32 +47,23 @@ public class JReadlineFrame extends JFrame {
 		getContentPane().add(pane);
 		validate();
 
-		final TextAreaReadline tar = new TextAreaReadline(text, " Welcome to the " + getTitle() + " \n\n");
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				tar.shutdown();
-			}
-		});
+		tar = new TextAreaReadline(text, " Welcome to the " + getTitle() + " \n\n");
 
 		model.setUp(list, tar);
 
-		Thread t2 = new Thread() {
-			@Override
-			public void run() {
-				setVisible(true);
-				model.run(tar);
-			}
-		};
-		t2.start();
-
+		Thread swingConsoleThread = new Thread(() -> {
+			setVisible(true);
+			model.run(tar);
+		}, getTitle());
+		swingConsoleThread.setDaemon(true);
+		swingConsoleThread.start();
 		try {
-			t2.join();
+			swingConsoleThread.join();
 		} catch (InterruptedException ie) {
-			// ignore
+			// Ignore.
 		}
 
-		System.exit(0);
+		dispose();
 	}
 
 	private Font findFont(String otherwise, int style, int size, String[] families) {
@@ -88,6 +80,16 @@ public class JReadlineFrame extends JFrame {
 			font = new Font(otherwise, style, size);
 		}
 		return font;
+	}
+
+	@Override
+	public void dispose() {
+		// Since tar.shutdown could take a few seconds, let us hide the window if it is
+		// not already hidden.
+		setVisible(false);
+		if (tar != null)
+			tar.shutdown();
+		super.dispose();
 	}
 
 	private static final long serialVersionUID = 3746242973444417387L;
