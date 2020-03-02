@@ -3,7 +3,6 @@ package com.creemama.swingconsole;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.util.Arrays;
 import java.util.List;
@@ -27,12 +26,14 @@ public class SwingConsoleFrame extends JFrame {
 	}
 
 	public void run(String[] args, SwingConsoleModel model) {
+		// NOTE: If you update this method, also update SwingConsoleDialog#run.
+
 		List<String> list = Arrays.asList(args);
 
 		JEditorPane text = new JTextPane();
 		text.setBackground(new Color(0xf2, 0xf2, 0xf2));
 		text.setCaretColor(new Color(0xa4, 0x00, 0x00));
-		Font font = findFont("Monospaced", Font.PLAIN, 14, new String[] { "Monaco", "Andale Mono" });
+		Font font = SwingConsoleUtil.findFont("Monospaced", Font.PLAIN, 14, new String[] { "Monaco", "Andale Mono" });
 		text.setFont(font);
 		text.setForeground(new Color(0xa4, 0x00, 0x00));
 		text.setMargin(new Insets(8, 8, 8, 8));
@@ -62,22 +63,6 @@ public class SwingConsoleFrame extends JFrame {
 		}
 
 		dispose();
-	}
-
-	private Font findFont(String otherwise, int style, int size, String[] families) {
-		String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-		Arrays.sort(fonts);
-		Font font = null;
-		for (int i = 0; i < families.length; i++) {
-			if (Arrays.binarySearch(fonts, families[i]) >= 0) {
-				font = new Font(families[i], style, size);
-				break;
-			}
-		}
-		if (font == null) {
-			font = new Font(otherwise, style, size);
-		}
-		return font;
 	}
 
 	@Override
