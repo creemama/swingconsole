@@ -17,14 +17,14 @@ public interface SwingConsoleModel {
 	 * 
 	 * @param args the list of args sent into a {@code main} method
 	 * @param tar  the controller of a text area, a
-	 *             {@link javax.swing.JTextComponent}, displaying an interactive
-	 *             console
+	 *             {@link javax.swing.text.JTextComponent}, displaying an
+	 *             interactive console
 	 * @throws NullPointerException if {@code tar} is {@code null}
 	 */
 	void setUp(List<String> args, TextAreaReadline tar);
 
 	/**
-	 * Runs the specified {@link script}.
+	 * Runs the specified {@code script}.
 	 * 
 	 * @param script the location of the script to run
 	 * @throws IOException                   if evaluating the specified
@@ -54,7 +54,7 @@ public interface SwingConsoleModel {
 	 * </p>
 	 * 
 	 * @param tar the controller of a text area, a
-	 *            {@link javax.swing.JTextComponent}, displaying an interactive
+	 *            {@link javax.swing.text.JTextComponent}, displaying an interactive
 	 *            console
 	 * @throws NullPointerException if {@code tar} is {@code null}
 	 */
