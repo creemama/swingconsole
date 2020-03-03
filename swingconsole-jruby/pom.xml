@@ -17,6 +17,29 @@
 	<version>9.2.10.0.0.0.1-SNAPSHOT</version>
 
 	<name>JRuby SwingConsole</name>
+	<description>A Java Swing interactive console for JRuby with readline-esque support</description>
+	<url>https://github.com/creemama/swingconsole</url>
+
+	<licenses>
+		<license>
+			<name>Eclipse Public License 2.0</name>
+			<url>https://www.eclipse.org/legal/epl-v20.html</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Chris Topher</name>
+			<email>c@creemama.com</email>
+			<url>https://creemama.com/</url>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/creemama/swingconsole.git</connection>
+		<developerConnection>scm:git:ssh://github.com:creemama/swingconsole.git</developerConnection>
+		<url>https://github.com/creemama/swingconsole/tree/master/swingconsole-jruby</url>
+	</scm>
 
 	<dependencies>
 		<dependency>

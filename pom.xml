@@ -10,6 +10,29 @@
 	<packaging>pom</packaging>
 
 	<name>SwingConsole Parent POM</name>
+	<description>A Java Swing interactive console with readline-esque support</description>
+	<url>https://github.com/creemama/swingconsole</url>
+
+	<licenses>
+		<license>
+			<name>Eclipse Public License 2.0</name>
+			<url>https://www.eclipse.org/legal/epl-v20.html</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Chris Topher</name>
+			<email>c@creemama.com</email>
+			<url>https://creemama.com/</url>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/creemama/swingconsole.git</connection>
+		<developerConnection>scm:git:ssh://github.com:creemama/swingconsole.git</developerConnection>
+		<url>https://github.com/creemama/swingconsole/tree/master</url>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
