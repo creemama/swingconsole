@@ -13,6 +13,7 @@ import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 
 /**
  * A {@code JDialog} that displays an interactive console with possible readline
@@ -53,17 +54,14 @@ public class SwingConsoleDialog extends JDialog {
 
 		Thread swingConsoleThread = new Thread(() -> {
 			setVisible(true);
-			model.run(tar);
+			try {
+				model.run(tar);
+			} finally {
+				SwingUtilities.invokeLater(() -> dispose());
+			}
 		}, getTitle());
 		swingConsoleThread.setDaemon(true);
 		swingConsoleThread.start();
-		try {
-			swingConsoleThread.join();
-		} catch (InterruptedException ie) {
-			// Ignore.
-		}
-
-		dispose();
 	}
 
 	@Override
