@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JEditorPane;
@@ -51,8 +53,15 @@ public class SwingConsoleFrame extends JFrame {
 
 		model.setUp(list, tar);
 
+		// We use this future to wait for the AWT Event Dispatch Thread to start. Since
+		// we have marked most of our threads as daemon threads, the AWT EDT might be
+		// the only thread preventing the JVM from closing. If we do not wait, sometimes
+		// the application immediately exits without the console window showing up.
+		CompletableFuture<Void> waitForAWTEDTToStart = new CompletableFuture<>();
+
 		Thread swingConsoleThread = new Thread(() -> {
 			setVisible(true);
+			waitForAWTEDTToStart.complete(null);
 			try {
 				model.run(tar);
 			} finally {
@@ -61,6 +70,12 @@ public class SwingConsoleFrame extends JFrame {
 		}, getTitle());
 		swingConsoleThread.setDaemon(true);
 		swingConsoleThread.start();
+
+		try {
+			waitForAWTEDTToStart.get();
+		} catch (ExecutionException | InterruptedException e) {
+			// Ignore.
+		}
 	}
 
 	@Override
