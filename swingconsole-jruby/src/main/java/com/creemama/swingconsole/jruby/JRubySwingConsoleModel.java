@@ -41,7 +41,7 @@ import jline.console.history.History;
  * 
  * @see SwingConsoleModel
  */
-public class JRubyConsoleModel implements SwingConsoleModel {
+public class JRubySwingConsoleModel implements SwingConsoleModel {
 
 	private final boolean redefineStandardIOStreams;
 
@@ -54,12 +54,12 @@ public class JRubyConsoleModel implements SwingConsoleModel {
 	private ScriptingContainer container;
 
 	/**
-	 * Constructs a new {@link JRubyConsoleModel} instance.
+	 * Constructs a new {@link JRubySwingConsoleModel} instance.
 	 * 
 	 * @param redefineStandardIOStreams whether to redefine JRuby's {@code $stdin},
 	 *                                  {@code $stdout}, and {@code $stderr} streams
 	 */
-	public JRubyConsoleModel(boolean redefineStandardIOStreams) {
+	public JRubySwingConsoleModel(boolean redefineStandardIOStreams) {
 		this.redefineStandardIOStreams = redefineStandardIOStreams;
 	}
 
