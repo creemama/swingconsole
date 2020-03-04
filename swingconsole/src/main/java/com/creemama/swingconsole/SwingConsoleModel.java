@@ -1,8 +1,9 @@
 package com.creemama.swingconsole;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
+
+import javax.script.ScriptException;
 
 /**
  * The model for {@link SwingConsoleFrame}.
@@ -27,13 +28,13 @@ public interface SwingConsoleModel {
 	 * Runs the specified {@code script}.
 	 * 
 	 * @param script the location of the script to run
-	 * @throws IOException                   if evaluating the specified
+	 * @throws ScriptException               if evaluating the specified
 	 *                                       {@code script} throws an error
 	 * @throws NullPointerException          if {@code script} is {@code null}
 	 * @throws UnsupportedOperationException if this model does not support this
 	 *                                       method
 	 */
-	void runScript(File script) throws IOException;
+	void eval(File script) throws ScriptException;
 
 	/**
 	 * Assigns the specified Java {@code value} object to the specified
@@ -45,7 +46,7 @@ public interface SwingConsoleModel {
 	 * @throws UnsupportedOperationException if this model does not support this
 	 *                                       method
 	 */
-	void putVariable(String variableName, Object value);
+	void put(String variableName, Object value);
 
 	/**
 	 * Runs the interactive console.

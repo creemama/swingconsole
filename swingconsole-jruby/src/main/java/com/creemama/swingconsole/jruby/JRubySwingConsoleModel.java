@@ -8,6 +8,8 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import javax.script.ScriptException;
+
 import org.jruby.Ruby;
 import org.jruby.RubyIO;
 import org.jruby.RubyInstanceConfig;
@@ -150,14 +152,16 @@ public class JRubySwingConsoleModel implements SwingConsoleModel {
 	}
 
 	@Override
-	public void runScript(File script) throws IOException {
+	public void eval(File script) throws ScriptException {
 		try (Reader reader = new FileReader(script, Charset.forName("UTF-8"))) {
 			container.runScriptlet(reader, script.getPath());
+		} catch (IOException e) {
+			throw new ScriptException(e);
 		}
 	}
 
 	@Override
-	public void putVariable(String variableName, Object value) {
+	public void put(String variableName, Object value) {
 		container.put(variableName, value);
 	}
 
