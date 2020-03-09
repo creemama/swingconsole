@@ -20,11 +20,23 @@ import javax.swing.SwingUtilities;
  * functionality like tab completion and command history.
  */
 public class SwingConsoleDialog extends JDialog {
+	private static final long serialVersionUID = 3746242973444417387L;
+
 	private TextAreaReadline tar;
 
 	public SwingConsoleDialog(Window owner, String title) {
 		super(owner, title);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	}
+
+	@Override
+	public void dispose() {
+		// Since tar.shutdown could take a few seconds, let us hide the window if it is
+		// not already hidden.
+		setVisible(false);
+		if (tar != null)
+			tar.shutdown();
+		super.dispose();
 	}
 
 	public void run(String[] args, SwingConsoleModel model) {
@@ -63,16 +75,4 @@ public class SwingConsoleDialog extends JDialog {
 		swingConsoleThread.setDaemon(true);
 		swingConsoleThread.start();
 	}
-
-	@Override
-	public void dispose() {
-		// Since tar.shutdown could take a few seconds, let us hide the window if it is
-		// not already hidden.
-		setVisible(false);
-		if (tar != null)
-			tar.shutdown();
-		super.dispose();
-	}
-
-	private static final long serialVersionUID = 3746242973444417387L;
 }

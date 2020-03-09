@@ -21,11 +21,23 @@ import javax.swing.SwingUtilities;
  * functionality like tab completion and command history.
  */
 public class SwingConsoleFrame extends JFrame {
+	private static final long serialVersionUID = 3746242973444417387L;
+
 	private TextAreaReadline tar;
 
 	public SwingConsoleFrame(String title) {
 		super(title);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+
+	@Override
+	public void dispose() {
+		// Since tar.shutdown could take a few seconds, let us hide the window if it is
+		// not already hidden.
+		setVisible(false);
+		if (tar != null)
+			tar.shutdown();
+		super.dispose();
 	}
 
 	public void run(String[] args, SwingConsoleModel model) {
@@ -77,16 +89,4 @@ public class SwingConsoleFrame extends JFrame {
 			// Ignore.
 		}
 	}
-
-	@Override
-	public void dispose() {
-		// Since tar.shutdown could take a few seconds, let us hide the window if it is
-		// not already hidden.
-		setVisible(false);
-		if (tar != null)
-			tar.shutdown();
-		super.dispose();
-	}
-
-	private static final long serialVersionUID = 3746242973444417387L;
 }
