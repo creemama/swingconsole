@@ -5,8 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Window;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -22,6 +22,8 @@ import javax.swing.SwingUtilities;
 public class SwingConsoleDialog extends JDialog {
 	private static final long serialVersionUID = 3746242973444417387L;
 
+	private boolean running;
+
 	private TextAreaReadline tar;
 
 	public SwingConsoleDialog(Window owner, String title) {
@@ -31,18 +33,43 @@ public class SwingConsoleDialog extends JDialog {
 
 	@Override
 	public void dispose() {
+		if (SwingUtilities.isEventDispatchThread())
+			disposeOnAWTEDT();
+		else
+			SwingUtilities.invokeLater(this::disposeOnAWTEDT);
+	}
+
+	private void disposeOnAWTEDT() {
 		// Since tar.shutdown could take a few seconds, let us hide the window if it is
 		// not already hidden.
 		setVisible(false);
-		if (tar != null)
+		if (tar != null) {
 			tar.shutdown();
+			tar = null;
+		}
+		getContentPane().removeAll();
 		super.dispose();
+		running = false;
+	}
+
+	public boolean isRunning() {
+		return running;
 	}
 
 	public void run(String[] args, SwingConsoleModel model) {
+		if (SwingUtilities.isEventDispatchThread())
+			runOnAWTEDT(args, model);
+		else
+			SwingUtilities.invokeLater(() -> runOnAWTEDT(args, model));
+	}
+
+	private void runOnAWTEDT(String[] args, SwingConsoleModel model) {
 		// NOTE: If you update this method, also update SwingConsoleFrame#run.
 
-		List<String> list = Arrays.asList(args);
+		if (running)
+			throw new IllegalStateException(
+					"You already called #run. Only call #run again after disposing of this window.");
+		running = true;
 
 		JEditorPane text = new JTextPane();
 		text.setBackground(new Color(0xf2, 0xf2, 0xf2));
@@ -52,6 +79,8 @@ public class SwingConsoleDialog extends JDialog {
 		text.setForeground(new Color(0xa4, 0x00, 0x00));
 		text.setMargin(new Insets(8, 8, 8, 8));
 
+		tar = new TextAreaReadline(text, " Welcome to the " + getTitle() + " \n\n");
+
 		JScrollPane pane = new JScrollPane();
 		pane.setBorder(BorderFactory.createLineBorder(Color.darkGray));
 		pane.setViewportView(text);
@@ -60,12 +89,13 @@ public class SwingConsoleDialog extends JDialog {
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(pane, BorderLayout.CENTER);
 
-		tar = new TextAreaReadline(text, " Welcome to the " + getTitle() + " \n\n");
-
-		model.setUp(list, tar);
-
 		Thread swingConsoleThread = new Thread(() -> {
-			setVisible(true);
+			model.setUp(Arrays.asList(args), tar);
+			try {
+				SwingUtilities.invokeAndWait(() -> setVisible(true));
+			} catch (InvocationTargetException | InterruptedException e) {
+				// Do nothing.
+			}
 			try {
 				model.run(tar);
 			} finally {
@@ -74,5 +104,19 @@ public class SwingConsoleDialog extends JDialog {
 		}, getTitle());
 		swingConsoleThread.setDaemon(true);
 		swingConsoleThread.start();
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		if (SwingUtilities.isEventDispatchThread())
+			setVisibleOnAWTEDT(visible);
+		else
+			SwingUtilities.invokeLater(() -> setVisibleOnAWTEDT(visible));
+	}
+
+	private void setVisibleOnAWTEDT(boolean visible) {
+		if (visible && !running)
+			throw new IllegalStateException("Call #run first.");
+		super.setVisible(visible);
 	}
 }
