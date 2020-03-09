@@ -27,7 +27,11 @@ public class SwingConsoleFrame extends JFrame {
 	}
 
 	public void run(String[] args, SwingConsoleModel model) {
-		common.run(args, getContentPane(), model, getTitle(), this);
+		run(args, model, true);
+	}
+
+	public void run(String[] args, SwingConsoleModel model, boolean visible) {
+		common.run(args, getContentPane(), model, getTitle(), visible, this);
 	}
 
 	@Override

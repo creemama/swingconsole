@@ -48,14 +48,16 @@ class SwingConsoleWindow {
 		return running;
 	}
 
-	void run(String[] args, Container container, SwingConsoleModel model, String title, Window window) {
+	void run(String[] args, Container container, SwingConsoleModel model, String title, boolean visible,
+			Window window) {
 		if (SwingUtilities.isEventDispatchThread())
-			runOnAWTEDT(args, container, model, title, window);
+			runOnAWTEDT(args, container, model, title, visible, window);
 		else
-			SwingUtilities.invokeLater(() -> runOnAWTEDT(args, container, model, title, window));
+			SwingUtilities.invokeLater(() -> runOnAWTEDT(args, container, model, title, visible, window));
 	}
 
-	private void runOnAWTEDT(String[] args, Container container, SwingConsoleModel model, String title, Window window) {
+	private void runOnAWTEDT(String[] args, Container container, SwingConsoleModel model, String title, boolean visible,
+			Window window) {
 		if (running)
 			throw new IllegalStateException(
 					"You already called #run. Only call #run again after disposing of this window.");
@@ -82,7 +84,8 @@ class SwingConsoleWindow {
 		Thread swingConsoleThread = new Thread(() -> {
 			model.setUp(Arrays.asList(args), tar);
 			try {
-				SwingUtilities.invokeAndWait(() -> window.setVisible(true));
+				if (visible)
+					SwingUtilities.invokeAndWait(() -> window.setVisible(true));
 			} catch (InvocationTargetException | InterruptedException e) {
 				// Do nothing.
 			}
