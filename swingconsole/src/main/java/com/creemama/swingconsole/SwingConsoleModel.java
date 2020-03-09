@@ -10,21 +10,6 @@ import javax.script.ScriptException;
  */
 public interface SwingConsoleModel {
 	/**
-	 * Hooks up the specified {@code tar}.
-	 * <p>
-	 * This may include hooking up the I/O streams of {@code tar} to a framework
-	 * like JRuby or Jython.
-	 * </p>
-	 * 
-	 * @param args the list of args sent into a {@code main} method
-	 * @param tar  the controller of a text area, a
-	 *             {@link javax.swing.text.JTextComponent}, displaying an
-	 *             interactive console
-	 * @throws NullPointerException if {@code tar} is {@code null}
-	 */
-	void setUp(List<String> args, TextAreaReadline tar);
-
-	/**
 	 * Runs the specified {@code script}.
 	 * 
 	 * @param script the location of the script to run
@@ -60,4 +45,19 @@ public interface SwingConsoleModel {
 	 * @throws NullPointerException if {@code tar} is {@code null}
 	 */
 	void run(TextAreaReadline tar);
+
+	/**
+	 * Hooks up the specified {@code tar}.
+	 * <p>
+	 * This may include hooking up the I/O streams of {@code tar} to a framework
+	 * like JRuby or Jython.
+	 * </p>
+	 * 
+	 * @param args the list of args sent into a {@code main} method
+	 * @param tar  the controller of a text area, a
+	 *             {@link javax.swing.text.JTextComponent}, displaying an
+	 *             interactive console
+	 * @throws NullPointerException if {@code tar} is {@code null}
+	 */
+	void setUp(List<String> args, TextAreaReadline tar);
 }
