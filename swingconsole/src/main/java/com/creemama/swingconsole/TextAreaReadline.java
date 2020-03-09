@@ -393,7 +393,7 @@ public class TextAreaReadline implements KeyListener {
 		if (!history.previous())
 			return;
 
-		String oldLine = history.current().toString().trim();
+		String oldLine = history.current().toString();
 		replaceText(startPos, area.getDocument().getLength(), oldLine);
 	}
 
@@ -416,7 +416,7 @@ public class TextAreaReadline implements KeyListener {
 			oldLine = currentLine; // at end
 		} else {
 			history.previous(); // undo check
-			oldLine = history.current().toString().trim();
+			oldLine = history.current().toString();
 		}
 
 		replaceText(startPos, area.getDocument().getLength(), oldLine);
@@ -476,7 +476,9 @@ public class TextAreaReadline implements KeyListener {
 
 		final String line = (String) inputJoin.call(Channel.GET_LINE, null);
 		if (line.length() > 0) {
-			return line.trim();
+			// enterAction appends "\n" to the end of the line, but we do not want this
+			// new-line character when retrieving a line.
+			return line.endsWith("\n") ? line.substring(0, line.length() - 1) : line;
 		} else {
 			return null;
 		}
