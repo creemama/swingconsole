@@ -47,15 +47,14 @@ class SwingConsoleWindow {
 		return running;
 	}
 
-	void run(String[] args, Container container, SwingConsoleModel model, String title, boolean visible,
-			Window window) {
+	void run(Container container, SwingConsoleModel model, String title, boolean visible, Window window) {
 		if (SwingUtilities.isEventDispatchThread())
-			runOnAWTEDT(args, container, model, title, visible, window);
+			runOnAWTEDT(container, model, title, visible, window);
 		else
-			SwingUtilities.invokeLater(() -> runOnAWTEDT(args, container, model, title, visible, window));
+			SwingUtilities.invokeLater(() -> runOnAWTEDT(container, model, title, visible, window));
 	}
 
-	private void runOnAWTEDT(String[] args, Container container, SwingConsoleModel model, String title, boolean visible,
+	private void runOnAWTEDT(Container container, SwingConsoleModel model, String title, boolean visible,
 			Window window) {
 		if (running)
 			throw new IllegalStateException(

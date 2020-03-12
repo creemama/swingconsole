@@ -28,12 +28,12 @@ public class SwingConsoleDialog extends JDialog {
 		return common.isRunning();
 	}
 
-	public void run(String[] args, SwingConsoleModel model) {
-		run(args, model, true);
+	public void run(SwingConsoleModel model) {
+		run(model, true);
 	}
 
-	public void run(String[] args, SwingConsoleModel model, boolean visible) {
-		common.run(args, getContentPane(), model, getTitle(), visible, this);
+	public void run(SwingConsoleModel model, boolean visible) {
+		common.run(getContentPane(), model, getTitle(), visible, this);
 	}
 
 	@Override
