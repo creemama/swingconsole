@@ -1,5 +1,6 @@
 package com.creemama.swingconsole.jruby;
 
+import java.io.File;
 import java.util.function.Consumer;
 
 import org.jruby.embed.ScriptingContainer;
@@ -31,6 +32,7 @@ public class JRubySwingConsoleMain {
 		};
 
 		SwingConsoleFrame console = new SwingConsoleFrame("JRuby IRB Console");
-		console.run(new JRubySwingConsoleRunnable(false, runAfterContainerInitialization));
+		File historyFile = new File(System.getProperty("user.home"), ".jruby");
+		console.run(new JRubySwingConsoleRunnable(historyFile, false, runAfterContainerInitialization));
 	}
 }

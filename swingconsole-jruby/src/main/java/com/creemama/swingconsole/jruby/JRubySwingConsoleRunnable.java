@@ -1,5 +1,6 @@
 package com.creemama.swingconsole.jruby;
 
+import java.io.File;
 import java.io.PrintStream;
 import java.util.function.Consumer;
 
@@ -38,6 +39,8 @@ import jline.console.history.History;
  */
 public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 
+	final private JRubyConsoleHistory history;
+
 	private final boolean redefineStandardIOStreams;
 
 	final private Consumer<ScriptingContainer> runAfterContainerInitialization;
@@ -45,6 +48,7 @@ public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 	/**
 	 * Constructs a new {@link JRubySwingConsoleRunnable} instance.
 	 * 
+	 * @param history                         command-history file
 	 * @param redefineStandardIOStreams       whether to redefine JRuby's
 	 *                                        {@code $stdin}, {@code $stdout}, and
 	 *                                        {@code $stderr} streams
@@ -54,8 +58,9 @@ public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 	 *                                        assigning variables or evaluating
 	 *                                        scripts)
 	 */
-	public JRubySwingConsoleRunnable(boolean redefineStandardIOStreams,
+	public JRubySwingConsoleRunnable(File history, boolean redefineStandardIOStreams,
 			Consumer<ScriptingContainer> runAfterContainerInitialization) {
+		this.history = new JRubyConsoleHistory(history);
 		this.redefineStandardIOStreams = redefineStandardIOStreams;
 		this.runAfterContainerInitialization = runAfterContainerInitialization;
 	}
@@ -90,14 +95,14 @@ public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 		readlineM.addMethod("readline", readlineMethod);
 		readlineM.getSingletonClass().addMethod("readline", readlineMethod);
 
-		History history = Readline.getHistory(Readline.getHolder(runtime));
+		History hist = history.setUpHistory(new PrintStream(tar.getOutputStream()), runtime);
 
 		runtime.evalScriptlet(
 				"ARGV << '--readline' << '--prompt' << 'inf-ruby';" + "require 'irb'; require 'irb/completion';");
 
 		Completer completer = Readline.getCompletor(Readline.getHolder(runtime));
 
-		tar.inject(completer, history);
+		tar.inject(completer, hist);
 	}
 
 	/**

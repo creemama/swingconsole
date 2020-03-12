@@ -1,5 +1,7 @@
 package com.creemama.swingconsole.jruby;
 
+import java.io.File;
+
 import org.jruby.embed.ScriptingContainer;
 
 /**
@@ -25,6 +27,8 @@ public class JRubyConsoleMain {
 
 		// container.put("$x", "Hello, World!");
 
-		new JRubyConsole(container).run();
+		File historyFile = new File(System.getProperty("user.home"), ".jruby");
+
+		new JRubyConsole(container, historyFile).run();
 	}
 }
