@@ -1,9 +1,10 @@
 package com.creemama.swingconsole;
 
 /**
- * The model for {@link SwingConsoleFrame}.
+ * A task that hooks up and runs an interactive console displayed within a
+ * {@link SwingConsoleDialog} or {@link SwingConsoleFrame}.
  */
-public interface SwingConsoleModel {
+public interface SwingConsoleRunnable {
 	/**
 	 * Runs the interactive console.
 	 * <p>

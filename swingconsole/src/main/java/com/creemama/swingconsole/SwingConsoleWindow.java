@@ -47,14 +47,14 @@ class SwingConsoleWindow {
 		return running;
 	}
 
-	void run(Container container, SwingConsoleModel model, String title, boolean visible, Window window) {
+	void run(Container container, SwingConsoleRunnable runnable, String title, boolean visible, Window window) {
 		if (SwingUtilities.isEventDispatchThread())
-			runOnAWTEDT(container, model, title, visible, window);
+			runOnAWTEDT(container, runnable, title, visible, window);
 		else
-			SwingUtilities.invokeLater(() -> runOnAWTEDT(container, model, title, visible, window));
+			SwingUtilities.invokeLater(() -> runOnAWTEDT(container, runnable, title, visible, window));
 	}
 
-	private void runOnAWTEDT(Container container, SwingConsoleModel model, String title, boolean visible,
+	private void runOnAWTEDT(Container container, SwingConsoleRunnable runnable, String title, boolean visible,
 			Window window) {
 		if (running)
 			throw new IllegalStateException(
@@ -87,7 +87,7 @@ class SwingConsoleWindow {
 				// Do nothing.
 			}
 			try {
-				model.run(tar);
+				runnable.run(tar);
 			} finally {
 				SwingUtilities.invokeLater(() -> window.dispose());
 			}

@@ -17,14 +17,16 @@ import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.Visibility;
 import org.jruby.runtime.builtin.IRubyObject;
 
-import com.creemama.swingconsole.SwingConsoleModel;
+import com.creemama.swingconsole.SwingConsoleRunnable;
 import com.creemama.swingconsole.TextAreaReadline;
 
 import jline.console.completer.Completer;
 import jline.console.history.History;
 
 /**
- * The model for a JRuby {@link com.creemama.swingconsole.SwingConsoleFrame}.
+ * A task that hooks up and runs a JRuby interactive Ruby (IRB) shell within a
+ * {@link com.creemama.swingconsole.SwingConsoleDialog} or
+ * {@link com.creemama.swingconsole.SwingConsoleFrame}.
  * <p>
  * The original code for this class comes from JRuby-Readline's <a href=
  * "https://github.com/jruby/jruby-readline/blob/80c8a97cc595837ec8e89154395d3f4a6ed2eee7/src/main/java/org/jruby/demo/readline/TextAreaReadline.java">TextAreaReadline</a>
@@ -32,22 +34,22 @@ import jline.console.history.History;
  * "https://github.com/jruby/jruby-readline/blob/80c8a97cc595837ec8e89154395d3f4a6ed2eee7/src/main/java/org/jruby/demo/readline/IRBConsole.java">IRBConsole</a>.
  * </p>
  * 
- * @see SwingConsoleModel
+ * @see SwingConsoleRunnable
  */
-public class JRubySwingConsoleModel implements SwingConsoleModel {
+public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 
 	private final String[] argv;
 
 	private final boolean redefineStandardIOStreams;
 
 	/**
-	 * Constructs a new {@link JRubySwingConsoleModel} instance.
+	 * Constructs a new {@link JRubySwingConsoleRunnable} instance.
 	 * 
 	 * @param argv                      arguments to send to Ruby
 	 * @param redefineStandardIOStreams whether to redefine JRuby's {@code $stdin},
 	 *                                  {@code $stdout}, and {@code $stderr} streams
 	 */
-	public JRubySwingConsoleModel(String[] argv, boolean redefineStandardIOStreams) {
+	public JRubySwingConsoleRunnable(String[] argv, boolean redefineStandardIOStreams) {
 		this.argv = argv == null ? null : Arrays.copyOf(argv, argv.length);
 		this.redefineStandardIOStreams = redefineStandardIOStreams;
 	}

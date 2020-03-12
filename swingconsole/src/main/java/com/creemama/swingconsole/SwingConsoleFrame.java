@@ -26,12 +26,12 @@ public class SwingConsoleFrame extends JFrame {
 		return common.isRunning();
 	}
 
-	public void run(SwingConsoleModel model) {
-		run(model, true);
+	public void run(SwingConsoleRunnable runnable) {
+		run(runnable, true);
 	}
 
-	public void run(SwingConsoleModel model, boolean visible) {
-		common.run(getContentPane(), model, getTitle(), visible, this);
+	public void run(SwingConsoleRunnable runnable, boolean visible) {
+		common.run(getContentPane(), runnable, getTitle(), visible, this);
 	}
 
 	@Override
