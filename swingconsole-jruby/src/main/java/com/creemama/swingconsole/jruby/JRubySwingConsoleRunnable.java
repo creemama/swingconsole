@@ -41,7 +41,7 @@ public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 
 	final private JRubyConsoleHistory history;
 
-	private final boolean redefineStandardIOStreams;
+	final private boolean redefineStandardIOStreams;
 
 	final private Consumer<ScriptingContainer> runAfterContainerInitialization;
 
@@ -71,12 +71,12 @@ public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 	 * method does not redefine the standard input-output streams. If you need that,
 	 * use {@link #hookIntoRuntimeWithStreams(Ruby, TextAreaReadline)}.
 	 *
-	 * @param runtime The runtime.
+	 * @param runtime the Ruby runtime
 	 * @param tar     the text area
 	 * @see #hookIntoRuntimeWithStreams(Ruby, TextAreaReadline)
 	 */
-	private void hookIntoRuntime(final Ruby runtime, TextAreaReadline tar) {
-		/* Hack in to replace usual readline with this */
+	private void hookIntoRuntime(Ruby runtime, TextAreaReadline tar) {
+		// Hack in to replace the usual readline with this.
 		runtime.getLoadService().require("readline");
 		RubyModule readlineM = runtime.getModule("Readline");
 
@@ -110,10 +110,10 @@ public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 	 * the <code>Readline</code> module so that it uses <code>tar</code>. This
 	 * method also redefines the standard input-output streams accordingly.
 	 *
-	 * @param runtime The runtime.
+	 * @param runtime the Ruby runtime
 	 * @see #hookIntoRuntime(Ruby, TextAreaReadline)
 	 */
-	private void hookIntoRuntimeWithStreams(final Ruby runtime, TextAreaReadline tar) {
+	private void hookIntoRuntimeWithStreams(Ruby runtime, TextAreaReadline tar) {
 		hookIntoRuntime(runtime, tar);
 
 		RubyIO in = new RubyIO(runtime, tar.getInputStream());
