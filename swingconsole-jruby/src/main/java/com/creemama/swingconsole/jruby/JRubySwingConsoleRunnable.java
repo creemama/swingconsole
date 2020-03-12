@@ -1,13 +1,13 @@
 package com.creemama.swingconsole.jruby;
 
 import java.io.PrintStream;
-import java.util.Arrays;
+import java.util.function.Consumer;
 
 import org.jruby.Ruby;
 import org.jruby.RubyIO;
-import org.jruby.RubyInstanceConfig;
 import org.jruby.RubyModule;
 import org.jruby.RubyString;
+import org.jruby.embed.ScriptingContainer;
 import org.jruby.ext.readline.Readline;
 import org.jruby.internal.runtime.GlobalVariable;
 import org.jruby.internal.runtime.ValueAccessor;
@@ -38,20 +38,26 @@ import jline.console.history.History;
  */
 public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 
-	private final String[] argv;
-
 	private final boolean redefineStandardIOStreams;
+
+	final private Consumer<ScriptingContainer> runAfterContainerInitialization;
 
 	/**
 	 * Constructs a new {@link JRubySwingConsoleRunnable} instance.
 	 * 
-	 * @param argv                      arguments to send to Ruby
-	 * @param redefineStandardIOStreams whether to redefine JRuby's {@code $stdin},
-	 *                                  {@code $stdout}, and {@code $stderr} streams
+	 * @param redefineStandardIOStreams       whether to redefine JRuby's
+	 *                                        {@code $stdin}, {@code $stdout}, and
+	 *                                        {@code $stderr} streams
+	 * @param runAfterContainerInitialization method used to set up the
+	 *                                        {@code ScriptingContainer} after
+	 *                                        container initialization (e.g.,
+	 *                                        assigning variables or evaluating
+	 *                                        scripts)
 	 */
-	public JRubySwingConsoleRunnable(String[] argv, boolean redefineStandardIOStreams) {
-		this.argv = argv == null ? null : Arrays.copyOf(argv, argv.length);
+	public JRubySwingConsoleRunnable(boolean redefineStandardIOStreams,
+			Consumer<ScriptingContainer> runAfterContainerInitialization) {
 		this.redefineStandardIOStreams = redefineStandardIOStreams;
+		this.runAfterContainerInitialization = runAfterContainerInitialization;
 	}
 
 	/**
@@ -116,15 +122,12 @@ public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 
 	@Override
 	public void run(TextAreaReadline tar) {
-		final RubyInstanceConfig config = new RubyInstanceConfig() {
-			{
-				setInput(tar.getInputStream());
-				setOutput(new PrintStream(tar.getOutputStream()));
-				setError(new PrintStream(tar.getOutputStream()));
-				setArgv(argv);
-			}
-		};
-		final Ruby runtime = Ruby.newInstance(config);
+		ScriptingContainer container = new ScriptingContainer();
+		container.setInput(tar.getInputStream());
+		container.setOutput(new PrintStream(tar.getOutputStream()));
+		container.setError(new PrintStream(tar.getOutputStream()));
+
+		Ruby runtime = container.getProvider().getRuntime();
 
 		runtime.getGlobalVariables().defineReadonly("$$",
 				new ValueAccessor(runtime.newFixnum(System.identityHashCode(runtime))), GlobalVariable.Scope.GLOBAL);
@@ -133,6 +136,9 @@ public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 			hookIntoRuntimeWithStreams(runtime, tar);
 		else
 			hookIntoRuntime(runtime, tar);
+
+		if (runAfterContainerInitialization != null)
+			runAfterContainerInitialization.accept(container);
 
 		runtime.evalScriptlet("IRB.start");
 	}
