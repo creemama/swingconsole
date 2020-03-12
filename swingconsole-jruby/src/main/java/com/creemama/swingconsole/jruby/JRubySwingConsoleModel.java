@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.script.ScriptException;
@@ -45,9 +46,9 @@ import jline.console.history.History;
  */
 public class JRubySwingConsoleModel implements SwingConsoleModel {
 
-	private final boolean redefineStandardIOStreams;
+	private final String[] argv;
 
-	private Ruby runtime;
+	private final boolean redefineStandardIOStreams;
 
 	/**
 	 * See https://github.com/jruby/jruby/wiki/RedBridge and the Javadoc for
@@ -58,35 +59,18 @@ public class JRubySwingConsoleModel implements SwingConsoleModel {
 	/**
 	 * Constructs a new {@link JRubySwingConsoleModel} instance.
 	 * 
+	 * @param argv                      arguments to send to Ruby
 	 * @param redefineStandardIOStreams whether to redefine JRuby's {@code $stdin},
 	 *                                  {@code $stdout}, and {@code $stderr} streams
 	 */
-	public JRubySwingConsoleModel(boolean redefineStandardIOStreams) {
+	public JRubySwingConsoleModel(String[] argv, boolean redefineStandardIOStreams) {
+		this.argv = argv == null ? null : Arrays.copyOf(argv, argv.length);
 		this.redefineStandardIOStreams = redefineStandardIOStreams;
 	}
 
 	@Override
 	public void setUp(List<String> list, TextAreaReadline tar) {
-		final RubyInstanceConfig config = new RubyInstanceConfig() {
-			{
-				setInput(tar.getInputStream());
-				setOutput(new PrintStream(tar.getOutputStream()));
-				setError(new PrintStream(tar.getOutputStream()));
-				setArgv(list.toArray(new String[0]));
-			}
-		};
-		final Ruby runtime = Ruby.newInstance(config);
-
-		// Create a scripting container attached to runtime.
-		container = new ScriptingContainer(LocalContextScope.SINGLETHREAD);
-
-		runtime.getGlobalVariables().defineReadonly("$$",
-				new ValueAccessor(runtime.newFixnum(System.identityHashCode(runtime))), GlobalVariable.Scope.GLOBAL);
-
-		if (redefineStandardIOStreams)
-			hookIntoRuntimeWithStreams(runtime, tar);
-		else
-			hookIntoRuntime(runtime, tar);
+		// Do nothing.
 	}
 
 	/**
@@ -100,8 +84,6 @@ public class JRubySwingConsoleModel implements SwingConsoleModel {
 	 * @see #hookIntoRuntimeWithStreams(Ruby, TextAreaReadline)
 	 */
 	private void hookIntoRuntime(final Ruby runtime, TextAreaReadline tar) {
-		this.runtime = runtime;
-
 		/* Hack in to replace usual readline with this */
 		runtime.getLoadService().require("readline");
 		RubyModule readlineM = runtime.getModule("Readline");
@@ -167,6 +149,27 @@ public class JRubySwingConsoleModel implements SwingConsoleModel {
 
 	@Override
 	public void run(TextAreaReadline tar) {
+		final RubyInstanceConfig config = new RubyInstanceConfig() {
+			{
+				setInput(tar.getInputStream());
+				setOutput(new PrintStream(tar.getOutputStream()));
+				setError(new PrintStream(tar.getOutputStream()));
+				setArgv(argv);
+			}
+		};
+		final Ruby runtime = Ruby.newInstance(config);
+
+		// Create a scripting container attached to runtime.
+		container = new ScriptingContainer(LocalContextScope.SINGLETHREAD);
+
+		runtime.getGlobalVariables().defineReadonly("$$",
+				new ValueAccessor(runtime.newFixnum(System.identityHashCode(runtime))), GlobalVariable.Scope.GLOBAL);
+
+		if (redefineStandardIOStreams)
+			hookIntoRuntimeWithStreams(runtime, tar);
+		else
+			hookIntoRuntime(runtime, tar);
+
 		runtime.evalScriptlet("IRB.start");
 	}
 }

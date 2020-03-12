@@ -9,6 +9,6 @@ import com.creemama.swingconsole.SwingConsoleFrame;
 public class JRubySwingConsoleMain {
 	public static void main(String[] args) {
 		SwingConsoleFrame console = new SwingConsoleFrame("JRuby IRB Console");
-		console.run(args, new JRubySwingConsoleModel(false));
+		console.run(args, new JRubySwingConsoleModel(args, false));
 	}
 }
