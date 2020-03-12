@@ -1,23 +1,13 @@
 package com.creemama.swingconsole.jruby;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.io.Reader;
-import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.List;
-
-import javax.script.ScriptException;
 
 import org.jruby.Ruby;
 import org.jruby.RubyIO;
 import org.jruby.RubyInstanceConfig;
 import org.jruby.RubyModule;
 import org.jruby.RubyString;
-import org.jruby.embed.LocalContextScope;
-import org.jruby.embed.ScriptingContainer;
 import org.jruby.ext.readline.Readline;
 import org.jruby.internal.runtime.GlobalVariable;
 import org.jruby.internal.runtime.ValueAccessor;
@@ -51,12 +41,6 @@ public class JRubySwingConsoleModel implements SwingConsoleModel {
 	private final boolean redefineStandardIOStreams;
 
 	/**
-	 * See https://github.com/jruby/jruby/wiki/RedBridge and the Javadoc for
-	 * {@link ScriptingContainer}.
-	 */
-	private ScriptingContainer container;
-
-	/**
 	 * Constructs a new {@link JRubySwingConsoleModel} instance.
 	 * 
 	 * @param argv                      arguments to send to Ruby
@@ -66,11 +50,6 @@ public class JRubySwingConsoleModel implements SwingConsoleModel {
 	public JRubySwingConsoleModel(String[] argv, boolean redefineStandardIOStreams) {
 		this.argv = argv == null ? null : Arrays.copyOf(argv, argv.length);
 		this.redefineStandardIOStreams = redefineStandardIOStreams;
-	}
-
-	@Override
-	public void setUp(List<String> list, TextAreaReadline tar) {
-		// Do nothing.
 	}
 
 	/**
@@ -134,20 +113,6 @@ public class JRubySwingConsoleModel implements SwingConsoleModel {
 	}
 
 	@Override
-	public void eval(File script) throws ScriptException {
-		try (Reader reader = new FileReader(script, Charset.forName("UTF-8"))) {
-			container.runScriptlet(reader, script.getPath());
-		} catch (IOException e) {
-			throw new ScriptException(e);
-		}
-	}
-
-	@Override
-	public void put(String variableName, Object value) {
-		container.put(variableName, value);
-	}
-
-	@Override
 	public void run(TextAreaReadline tar) {
 		final RubyInstanceConfig config = new RubyInstanceConfig() {
 			{
@@ -158,9 +123,6 @@ public class JRubySwingConsoleModel implements SwingConsoleModel {
 			}
 		};
 		final Ruby runtime = Ruby.newInstance(config);
-
-		// Create a scripting container attached to runtime.
-		container = new ScriptingContainer(LocalContextScope.SINGLETHREAD);
 
 		runtime.getGlobalVariables().defineReadonly("$$",
 				new ValueAccessor(runtime.newFixnum(System.identityHashCode(runtime))), GlobalVariable.Scope.GLOBAL);

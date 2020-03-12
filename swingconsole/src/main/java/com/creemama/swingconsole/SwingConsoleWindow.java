@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
@@ -82,7 +81,6 @@ class SwingConsoleWindow {
 		container.add(pane, BorderLayout.CENTER);
 
 		Thread swingConsoleThread = new Thread(() -> {
-			model.setUp(Arrays.asList(args), tar);
 			try {
 				if (visible)
 					SwingUtilities.invokeAndWait(() -> window.setVisible(true));
