@@ -11,18 +11,9 @@ import org.jruby.internal.runtime.ValueAccessor;
  * A JRuby interactive Ruby (IRB) shell.
  */
 public class JRubyConsole {
-	final private ScriptingContainer container;
-
-	final private JRubyConsoleHistory history;
-
-	public JRubyConsole(ScriptingContainer container, File historyFile) {
-		this.container = container;
-		this.history = new JRubyConsoleHistory(historyFile);
-	}
-
-	public void run() {
+	public void run(ScriptingContainer container, File historyFile) {
 		Ruby runtime = container.getProvider().getRuntime();
-		history.setUpHistory(System.out, runtime);
+		new JRubyConsoleHistory(historyFile).setUpHistory(System.out, runtime);
 		runtime.getGlobalVariables().defineReadonly("$$",
 				new ValueAccessor(runtime.newFixnum(System.identityHashCode(runtime))), GlobalVariable.Scope.GLOBAL);
 		runtime.evalScriptlet(

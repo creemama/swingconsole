@@ -29,6 +29,6 @@ public class JRubyConsoleMain {
 
 		File historyFile = new File(System.getProperty("user.home"), ".jruby");
 
-		new JRubyConsole(container, historyFile).run();
+		new JRubyConsole().run(container, historyFile);
 	}
 }
