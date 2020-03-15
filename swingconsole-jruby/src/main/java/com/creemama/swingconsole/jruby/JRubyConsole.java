@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.util.Optional;
 
 import org.jruby.Ruby;
 import org.jruby.embed.ScriptingContainer;
@@ -21,6 +22,21 @@ import com.creemama.swingconsole.ConsoleConfig.StartupCommandVisitor;
  * A JRuby interactive Ruby (IRB) shell.
  */
 public class JRubyConsole {
+	static Optional<String> buildVersion(ConsoleConfig config, Ruby runtime) {
+		String banner = config.getBanner().orElse(null);
+		if (banner.contains("{{VERSION}}")) {
+			String version;
+			try {
+				Object versionObj = runtime.evalScriptlet("JRUBY_VERSION");
+				version = versionObj == null ? "?" : versionObj.toString();
+			} catch (RuntimeException e) {
+				version = "?";
+			}
+			return Optional.of(banner.replaceAll("\\{\\{VERSION\\}\\}", version));
+		}
+		return Optional.of(banner);
+	}
+
 	public void run(ConsoleConfig config) {
 		// Read more about ScriptingContainer at
 		// https://github.com/jruby/jruby/wiki/RedBridge.
@@ -48,7 +64,7 @@ public class JRubyConsole {
 				new ValueAccessor(runtime.newFixnum(System.identityHashCode(runtime))), GlobalVariable.Scope.GLOBAL);
 		runtime.evalScriptlet(
 				"ARGV << '--readline' << '--prompt' << 'inf-ruby';" + "require 'irb'; require 'irb/completion';");
-		config.getBanner().ifPresent(System.out::println);
+		buildVersion(config, runtime).ifPresent(System.out::println);
 		runtime.evalScriptlet("IRB.start");
 	}
 }

@@ -163,9 +163,13 @@ public class JRubySwingConsole implements SwingConsole {
 			});
 		}
 
-		config.getBanner().ifPresent(banner -> {
-			container.put("$banner", banner);
-			container.runScriptlet("puts $banner");
+		JRubyConsole.buildVersion(config, runtime).ifPresent(banner -> {
+			try {
+				console.getOutputStream().write((banner + "\n").getBytes("UTF-8"));
+				console.getOutputStream().flush();
+			} catch (IOException e) {
+				// Ignore.
+			}
 		});
 
 		runtime.evalScriptlet("IRB.start");

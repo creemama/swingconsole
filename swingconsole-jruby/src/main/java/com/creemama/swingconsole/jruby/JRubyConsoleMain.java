@@ -11,9 +11,9 @@ import com.creemama.swingconsole.ConsoleConfig;
 public class JRubyConsoleMain {
 	public static void main(String[] args) {
 		ConsoleConfig config = new ConsoleConfig() //
-				// .evalFile("/path/to/script.rb") //
-				// .put("$x", new StringBuilder("Hello, World!")) //
-				.banner("Welcome to the JRuby IRB Console") //
+				// .evalFile("/path/to/startup/script.rb") //
+				// .put("$java_variable", new StringBuilder("Console-Accessible Variable")) //
+				.banner("\nJRuby {{VERSION}} Java " + System.getProperty("java.version") + "\n") //
 				.historyFile(new File(System.getProperty("user.home"), ".jruby"));
 		new JRubyConsole().run(config);
 	}
