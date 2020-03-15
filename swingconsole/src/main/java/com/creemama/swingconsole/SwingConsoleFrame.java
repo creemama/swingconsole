@@ -14,6 +14,7 @@ public class SwingConsoleFrame extends JFrame {
 	public SwingConsoleFrame(String title) {
 		super(title);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setSize(700, 600);
 		this.common = new SwingConsoleWindow();
 	}
 

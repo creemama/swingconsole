@@ -1,13 +1,11 @@
 package com.creemama.swingconsole;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 
-import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
@@ -59,10 +57,8 @@ class SwingConsoleWindow {
 		SwingConsolePane text = new SwingConsolePane(" Welcome to the " + title + " \n\n");
 
 		JScrollPane pane = new JScrollPane();
-		pane.setBorder(BorderFactory.createLineBorder(Color.darkGray));
 		pane.setViewportView(text);
 
-		window.setSize(700, 600);
 		container.setLayout(new BorderLayout());
 		container.add(pane, BorderLayout.CENTER);
 

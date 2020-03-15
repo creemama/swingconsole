@@ -16,6 +16,7 @@ public class SwingConsoleDialog extends JDialog {
 	public SwingConsoleDialog(Window owner, String title) {
 		super(owner, title);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setSize(700, 600);
 		this.common = new SwingConsoleWindow();
 	}
 
