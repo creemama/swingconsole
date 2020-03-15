@@ -4,7 +4,7 @@ package com.creemama.swingconsole;
  * A task that hooks up and runs an interactive console displayed within a
  * {@link SwingConsoleDialog} or {@link SwingConsoleFrame}.
  */
-public interface SwingConsoleRunnable {
+public interface SwingConsole {
 	/**
 	 * Runs the interactive console.
 	 * <p>

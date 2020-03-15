@@ -43,15 +43,14 @@ class SwingConsoleWindow {
 		return running;
 	}
 
-	void run(Container container, SwingConsoleRunnable runnable, String title, boolean visible, Window window) {
+	void run(Container container, SwingConsole runnable, String title, boolean visible, Window window) {
 		if (SwingUtilities.isEventDispatchThread())
 			runOnAWTEDT(container, runnable, title, visible, window);
 		else
 			SwingUtilities.invokeLater(() -> runOnAWTEDT(container, runnable, title, visible, window));
 	}
 
-	private void runOnAWTEDT(Container container, SwingConsoleRunnable runnable, String title, boolean visible,
-			Window window) {
+	private void runOnAWTEDT(Container container, SwingConsole runnable, String title, boolean visible, Window window) {
 		if (running)
 			throw new IllegalStateException(
 					"You already called #run. Only call #run again after disposing of this window.");

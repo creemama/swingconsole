@@ -26,8 +26,8 @@ import com.creemama.swingconsole.ConsoleConfig.EvalFileStartupCommand;
 import com.creemama.swingconsole.ConsoleConfig.PutStartupCommand;
 import com.creemama.swingconsole.ConsoleConfig.StartupCommand;
 import com.creemama.swingconsole.ConsoleConfig.StartupCommandVisitor;
+import com.creemama.swingconsole.SwingConsole;
 import com.creemama.swingconsole.SwingConsolePane;
-import com.creemama.swingconsole.SwingConsoleRunnable;
 
 import jline.console.completer.Completer;
 import jline.console.history.History;
@@ -43,26 +43,26 @@ import jline.console.history.History;
  * "https://github.com/jruby/jruby-readline/blob/80c8a97cc595837ec8e89154395d3f4a6ed2eee7/src/main/java/org/jruby/demo/readline/IRBConsole.java">IRBConsole</a>.
  * </p>
  * 
- * @see SwingConsoleRunnable
+ * @see SwingConsole
  */
-public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
+public class JRubySwingConsole implements SwingConsole {
 
 	final private ConsoleConfig config;
 
 	final private boolean redefineStandardIOStreams;
 
-	public JRubySwingConsoleRunnable(ConsoleConfig config) {
+	public JRubySwingConsole(ConsoleConfig config) {
 		this(config, false);
 	}
 
 	/**
-	 * Constructs a new {@link JRubySwingConsoleRunnable} instance.
+	 * Constructs a new {@link JRubySwingConsole} instance.
 	 * 
 	 * @param config                    configuration for this interactive console
 	 * @param redefineStandardIOStreams whether to redefine JRuby's {@code $stdin},
 	 *                                  {@code $stdout}, and {@code $stderr} streams
 	 */
-	public JRubySwingConsoleRunnable(ConsoleConfig config, boolean redefineStandardIOStreams) {
+	public JRubySwingConsole(ConsoleConfig config, boolean redefineStandardIOStreams) {
 		this.config = config;
 		this.redefineStandardIOStreams = redefineStandardIOStreams;
 	}

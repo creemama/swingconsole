@@ -23,6 +23,6 @@ public static void main(String[] args) {
 			.banner("Welcome!")
 			.historyFile(new File(System.getProperty("user.home"), ".jruby"));
 	SwingConsoleFrame console = new SwingConsoleFrame("JRuby IRB Console");
-	console.run(new JRubySwingConsoleRunnable(config));
+	console.run(new JRubySwingConsole(config));
 }
 ```
