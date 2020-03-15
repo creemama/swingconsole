@@ -1,10 +1,8 @@
 package com.creemama.swingconsole.jruby;
 
 import java.io.File;
-import java.util.function.Consumer;
 
-import org.jruby.embed.ScriptingContainer;
-
+import com.creemama.swingconsole.ConsoleConfig;
 import com.creemama.swingconsole.SwingConsoleFrame;
 
 /**
@@ -13,26 +11,12 @@ import com.creemama.swingconsole.SwingConsoleFrame;
  */
 public class JRubySwingConsoleMain {
 	public static void main(String[] args) {
-		// Read more about ScriptingContainer at
-		// https://github.com/jruby/jruby/wiki/RedBridge.
-		Consumer<ScriptingContainer> runAfterContainerInitialization = container -> {
-
-			// Evaluate a script before starting the console:
-
-			// File script = new File("/path/to/script.rb");
-			// try (Reader reader = new FileReader(script, Charset.forName("UTF-8"))) {
-			// container.runScriptlet(reader, script.getPath());
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-
-			// Assign variables before starting the console:
-
-			// container.put("$x", "Hello, World!");
-		};
-
+		ConsoleConfig config = new ConsoleConfig() //
+				// .evalFile("/path/to/script.rb") //
+				// .put("$x", new StringBuilder("Hello, World!")) //
+				// .banner("Welcome!") //
+				.historyFile(new File(System.getProperty("user.home"), ".jruby"));
 		SwingConsoleFrame console = new SwingConsoleFrame("JRuby IRB Console");
-		File historyFile = new File(System.getProperty("user.home"), ".jruby");
-		console.run(new JRubySwingConsoleRunnable(historyFile, false, runAfterContainerInitialization));
+		console.run(new JRubySwingConsoleRunnable(config));
 	}
 }

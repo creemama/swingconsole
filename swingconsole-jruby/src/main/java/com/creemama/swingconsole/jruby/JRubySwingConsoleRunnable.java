@@ -1,8 +1,11 @@
 package com.creemama.swingconsole.jruby;
 
-import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintStream;
-import java.util.function.Consumer;
+import java.io.Reader;
+import java.io.UncheckedIOException;
+import java.nio.charset.Charset;
 
 import org.jruby.Ruby;
 import org.jruby.RubyIO;
@@ -18,6 +21,11 @@ import org.jruby.runtime.ThreadContext;
 import org.jruby.runtime.Visibility;
 import org.jruby.runtime.builtin.IRubyObject;
 
+import com.creemama.swingconsole.ConsoleConfig;
+import com.creemama.swingconsole.ConsoleConfig.EvalFileStartupCommand;
+import com.creemama.swingconsole.ConsoleConfig.PutStartupCommand;
+import com.creemama.swingconsole.ConsoleConfig.StartupCommand;
+import com.creemama.swingconsole.ConsoleConfig.StartupCommandVisitor;
 import com.creemama.swingconsole.SwingConsolePane;
 import com.creemama.swingconsole.SwingConsoleRunnable;
 
@@ -39,30 +47,24 @@ import jline.console.history.History;
  */
 public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 
-	final private JRubyConsoleHistory history;
+	final private ConsoleConfig config;
 
 	final private boolean redefineStandardIOStreams;
 
-	final private Consumer<ScriptingContainer> runAfterContainerInitialization;
+	public JRubySwingConsoleRunnable(ConsoleConfig config) {
+		this(config, false);
+	}
 
 	/**
 	 * Constructs a new {@link JRubySwingConsoleRunnable} instance.
 	 * 
-	 * @param history                         command-history file
-	 * @param redefineStandardIOStreams       whether to redefine JRuby's
-	 *                                        {@code $stdin}, {@code $stdout}, and
-	 *                                        {@code $stderr} streams
-	 * @param runAfterContainerInitialization method used to set up the
-	 *                                        {@code ScriptingContainer} after
-	 *                                        container initialization (e.g.,
-	 *                                        assigning variables or evaluating
-	 *                                        scripts)
+	 * @param config                    configuration for this interactive console
+	 * @param redefineStandardIOStreams whether to redefine JRuby's {@code $stdin},
+	 *                                  {@code $stdout}, and {@code $stderr} streams
 	 */
-	public JRubySwingConsoleRunnable(File history, boolean redefineStandardIOStreams,
-			Consumer<ScriptingContainer> runAfterContainerInitialization) {
-		this.history = new JRubyConsoleHistory(history);
+	public JRubySwingConsoleRunnable(ConsoleConfig config, boolean redefineStandardIOStreams) {
+		this.config = config;
 		this.redefineStandardIOStreams = redefineStandardIOStreams;
-		this.runAfterContainerInitialization = runAfterContainerInitialization;
 	}
 
 	/**
@@ -95,7 +97,8 @@ public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 		readlineM.addMethod("readline", readlineMethod);
 		readlineM.getSingletonClass().addMethod("readline", readlineMethod);
 
-		History hist = history.setUpHistory(new PrintStream(console.getOutputStream()), runtime);
+		History hist = new JRubyConsoleHistory(config.getHistoryFile().orElse(null))
+				.setUpHistory(new PrintStream(console.getOutputStream()), runtime);
 
 		runtime.evalScriptlet(
 				"ARGV << '--readline' << '--prompt' << 'inf-ruby';" + "require 'irb'; require 'irb/completion';");
@@ -142,8 +145,28 @@ public class JRubySwingConsoleRunnable implements SwingConsoleRunnable {
 		else
 			hookIntoRuntime(runtime, console);
 
-		if (runAfterContainerInitialization != null)
-			runAfterContainerInitialization.accept(container);
+		for (StartupCommand command : config.getStartupCommands()) {
+			command.accept(new StartupCommandVisitor() {
+				@Override
+				public void visit(EvalFileStartupCommand command) {
+					try (Reader reader = new FileReader(command.getFile(), Charset.forName("UTF-8"))) {
+						container.runScriptlet(reader, command.getFile().getPath());
+					} catch (IOException e) {
+						throw new UncheckedIOException(e);
+					}
+				}
+
+				@Override
+				public void visit(PutStartupCommand command) {
+					container.put(command.getVariableName(), command.getValue());
+				}
+			});
+		}
+
+		config.getBanner().ifPresent(banner -> {
+			container.put("$banner", banner);
+			container.runScriptlet("puts $banner");
+		});
 
 		runtime.evalScriptlet("IRB.start");
 	}
