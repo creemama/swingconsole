@@ -3,16 +3,12 @@ package com.creemama.swingconsole;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Font;
-import java.awt.Insets;
 import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
-import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
 /**
@@ -21,7 +17,7 @@ import javax.swing.SwingUtilities;
 class SwingConsoleWindow {
 	private boolean running;
 
-	private TextAreaReadline tar;
+	private SwingConsolePane text;
 
 	void dispose(Container container, Runnable superDispose, Window window) {
 		if (SwingUtilities.isEventDispatchThread())
@@ -34,9 +30,9 @@ class SwingConsoleWindow {
 		// Since tar.shutdown could take a few seconds, let us hide the window if it is
 		// not already hidden.
 		window.setVisible(false);
-		if (tar != null) {
-			tar.shutdown();
-			tar = null;
+		if (text != null) {
+			text.shutDown();
+			text = null;
 		}
 		container.removeAll();
 		superDispose.run();
@@ -61,15 +57,7 @@ class SwingConsoleWindow {
 					"You already called #run. Only call #run again after disposing of this window.");
 		running = true;
 
-		JEditorPane text = new JTextPane();
-		text.setBackground(new Color(0xf2, 0xf2, 0xf2));
-		text.setCaretColor(new Color(0xa4, 0x00, 0x00));
-		Font font = SwingConsoleUtil.findFont("Monospaced", Font.PLAIN, 14, new String[] { "Monaco", "Andale Mono" });
-		text.setFont(font);
-		text.setForeground(new Color(0xa4, 0x00, 0x00));
-		text.setMargin(new Insets(8, 8, 8, 8));
-
-		tar = new TextAreaReadline(text, " Welcome to the " + title + " \n\n");
+		SwingConsolePane text = new SwingConsolePane(" Welcome to the " + title + " \n\n");
 
 		JScrollPane pane = new JScrollPane();
 		pane.setBorder(BorderFactory.createLineBorder(Color.darkGray));
@@ -87,7 +75,7 @@ class SwingConsoleWindow {
 				// Do nothing.
 			}
 			try {
-				runnable.run(tar);
+				runnable.run(text);
 			} finally {
 				SwingUtilities.invokeLater(() -> window.dispose());
 			}

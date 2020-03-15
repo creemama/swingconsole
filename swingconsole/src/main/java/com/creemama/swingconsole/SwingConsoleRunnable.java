@@ -11,10 +11,8 @@ public interface SwingConsoleRunnable {
 	 * This method should block until processing finishes.
 	 * </p>
 	 * 
-	 * @param tar the controller of a text area, a
-	 *            {@link javax.swing.text.JTextComponent}, displaying an interactive
-	 *            console
-	 * @throws NullPointerException if {@code tar} is {@code null}
+	 * @param console text component displaying an interactive console
+	 * @throws NullPointerException if {@code console} is {@code null}
 	 */
-	void run(TextAreaReadline tar);
+	void run(SwingConsolePane console);
 }
