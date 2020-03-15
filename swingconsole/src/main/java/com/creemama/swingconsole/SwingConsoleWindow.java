@@ -2,17 +2,23 @@ package com.creemama.swingconsole;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 /**
  * Common code between {@link SwingConsoleDialog} and {@link SwingConsoleFrame}.
  */
 class SwingConsoleWindow {
+	final static int DEFAULT_CLOSE_OPERATION = WindowConstants.DISPOSE_ON_CLOSE;
+
+	final static Dimension DEFAULT_SIZE = new Dimension(700, 600);
+
 	private boolean running;
 
 	private SwingConsolePane text;

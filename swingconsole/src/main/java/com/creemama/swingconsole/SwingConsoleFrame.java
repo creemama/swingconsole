@@ -13,8 +13,8 @@ public class SwingConsoleFrame extends JFrame {
 
 	public SwingConsoleFrame(String title) {
 		super(title);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(700, 600);
+		setDefaultCloseOperation(SwingConsoleWindow.DEFAULT_CLOSE_OPERATION);
+		setSize(SwingConsoleWindow.DEFAULT_SIZE);
 		this.common = new SwingConsoleWindow();
 	}
 
