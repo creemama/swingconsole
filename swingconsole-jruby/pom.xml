@@ -7,14 +7,14 @@
 	<parent>
 		<groupId>com.creemama.swingconsole</groupId>
 		<artifactId>swingconsole-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.1</version>
 	</parent>
 
 	<artifactId>swingconsole-jruby</artifactId>
 	<!-- The first part of the version number matches the version number of 
 		org.jruby.jruby-complete. The second part of the version number matches the 
 		semantic versioning (https://semver.org/) of this project. -->
-	<version>9.2.10.0.0.0.1-SNAPSHOT</version>
+	<version>9.2.10.0.0.0.1</version>
 
 	<name>JRuby SwingConsole</name>
 	<description>A Java Swing interactive console for JRuby with readline-esque support</description>
@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>com.creemama.swingconsole</groupId>
 			<artifactId>swingconsole</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jruby/jruby-complete -->
 		<dependency>

@@ -7,14 +7,14 @@
 	<parent>
 		<groupId>com.creemama.swingconsole</groupId>
 		<artifactId>swingconsole-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.1</version>
 	</parent>
 
 	<artifactId>swingconsole-jep</artifactId>
 	<!-- The first part of the version number matches the version number of 
 		black.ninia.jep. The second part of the version number matches the semantic 
 		versioning (https://semver.org/) of this project. -->
-	<version>3.9.0.0.0.1-SNAPSHOT</version>
+	<version>3.9.0.0.0.1</version>
 
 	<name>Java Embedded Python (JEP) SwingConsole</name>
 	<description>A Java Swing interactive console for Java Embedded Python (JEP) with readline-esque support</description>
@@ -51,7 +51,7 @@
 		<dependency>
 			<groupId>com.creemama.swingconsole</groupId>
 			<artifactId>swingconsole</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jline/jline -->
 		<dependency>
