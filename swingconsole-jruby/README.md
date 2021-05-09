@@ -8,9 +8,9 @@ Try it out by executing the following:
 
 ```sh
 mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.2:copy \
-  -Dartifact=com.creemama.swingconsole:swingconsole-jruby:9.2.10.0.0.0.1-SNAPSHOT:jar:jar-with-dependencies \
+  -Dartifact=com.creemama.swingconsole:swingconsole-jruby:9.2.10.0.0.0.1:jar:jar-with-dependencies \
   -DoutputDirectory=. \
-&& java -jar swingconsole-jruby-9.2.10.0.0.0.1-SNAPSHOT-jar-with-dependencies.jar
+&& java -jar swingconsole-jruby-9.2.10.0.0.0.1-jar-with-dependencies.jar
 ```
 
 Use the following code snippet as a guide to embed a `JRuby SwingConsole` into your application:
@@ -25,4 +25,14 @@ public static void main(String[] args) {
 	SwingConsoleFrame console = new SwingConsoleFrame("JRuby IRB Console");
 	console.run(new JRubySwingConsole(config));
 }
+```
+
+To add JRuby SwingConsole as a dependency in your Maven project, use the following:
+
+```xml
+<dependency>
+  <groupId>com.creemama.swingconsole</groupId>
+  <artifactId>swingconsole-jruby</artifactId>
+  <version>9.2.10.0.0.0.1</version>
+</dependency>
 ```

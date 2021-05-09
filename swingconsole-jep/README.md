@@ -8,9 +8,9 @@ Try it out by executing the following:
 
 ```sh
 mvn org.apache.maven.plugins:maven-dependency-plugin:3.1.2:copy \
-  -Dartifact=com.creemama.swingconsole:swingconsole-jep:3.9.0.0.0.1-SNAPSHOT:jar:jar-with-dependencies \
+  -Dartifact=com.creemama.swingconsole:swingconsole-jep:3.9.0.0.0.1:jar:jar-with-dependencies \
   -DoutputDirectory=. \
-&& java -Djava.library.path=/path/to/jep.dll.jnilib.so/dir -jar swingconsole-jep-3.9.0.0.0.1-SNAPSHOT-jar-with-dependencies.jar
+&& java -Djava.library.path=/path/to/jep.dll.jnilib.so/dir -jar swingconsole-jep-3.9.0.0.0.1-jar-with-dependencies.jar
 ```
 
 Use the following code snippet as a guide to embed a `JEP SwingConsole` into your application:
@@ -26,4 +26,14 @@ public static void main(String[] args) throws JepException {
 	console.run(new JepSwingConsole(config));
 }
 
+```
+
+To add JEP SwingConsole as a dependency in your Maven project, use the following:
+
+```xml
+<dependency>
+  <groupId>com.creemama.swingconsole</groupId>
+  <artifactId>swingconsole-jep</artifactId>
+  <version>3.9.0.0.0.1</version>
+</dependency>
 ```
